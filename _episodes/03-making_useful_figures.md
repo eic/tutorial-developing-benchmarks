@@ -10,4 +10,4 @@ keypoints:
 - "Clearly-labeled figures showing both physics results and detector performance plots will be helpful during detector and software development."
 ---
 
-Placeholder.
+Placeholder text.
