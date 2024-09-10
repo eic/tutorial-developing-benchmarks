@@ -62,6 +62,7 @@ The way most users will interact with your benchmark is at the level of the arti
 %                  BENCH.TEX                                       %
 %           Written by YOUR NAME                                   %
 %====================================================================%
+\documentclass{bench}
 ```
 
 
