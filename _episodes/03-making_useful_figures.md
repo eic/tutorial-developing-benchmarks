@@ -95,5 +95,24 @@ This figure shows...
 
 Create this `bench.tex` file at the top of your benchmark (`physics_benchmarks/benchmarks/your_bench/`). Also copy [`bench.cls`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.cls) to the same location to define the `bench` document class.
 
+Finally, add a rule to the `Snakefile` to compile the tex file, and create output in the `results` directory. This ensures the resulting pdf will be included as an artifact.
+
+```snakemake
+rule yourbench_compile_manual:
+    input:
+        tar=HTTPRemoteProvider().remote("https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.15.0/tectonic-0.15.0-x86_64-unknown-linux-musl.tar.gz"),
+        cls=workflow.source_path("bench.cls"),
+        tex=workflow.source_path("bench.tex"),
+    output:
+        temp("tectonic"),
+        cls_tmp=temp("bench.cls"),
+        pdf="results/bench.pdf",
+    shell: """
+tar zxf {input.tar}
+cp {input.cls} {output.cls_tmp} # copy to local directory
+./tectonic {input.tex} --outdir="$(dirname {output.pdf})"
+"""
+```
+
 
 
