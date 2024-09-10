@@ -12,7 +12,7 @@ keypoints:
 
 We've discussed how to plug your analysis script into GitLab's CI, and monitor it using pipelines. We'll now briefly discuss how to make figures for your benchmark that are useful to both yourself and to others. 
 
-## Making benchmark plots
+## Making benchmark figures
 
 The plots created in a benchmark should be designed to be legible not only to yourself, but to those working on detector and software development. This means benchmark plots should be clearly labeled with
 
@@ -48,6 +48,8 @@ And margins were increased to allow for more space for larger axis labels:
 ```c++
 virtualPad->SetBottomMargin(0.2);
 ```
+
+## Describing your benchmark figures
 
 Even a well-labeled figure will still be ambiguous as to what is being plotted. For example, how you define efficiency may differ from another analyzer. It will be useful to include with your benchmark an explainer of each of the various plots that are produced:
 
@@ -90,6 +92,8 @@ This figure shows...
 \end{document}
 {% endraw %}
 ```
+
+Create this `bench.tex` file at the top of your benchmark (`physics_benchmarks/benchmarks/your_bench/`). Also copy [`bench.cls`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.cls) to the same location to define the `bench` document class.
 
 
 
