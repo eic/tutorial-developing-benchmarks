@@ -26,7 +26,7 @@ Ideally, benchmark designers should aim to design paper-ready figures labeled wi
 
 An example figure from the u-channel rho benchmark is shown here:
 
-![Example benchmark figure]({{ page.root }}/fig/example_benchfig.png)
+<img src="{{ page.root }}/fig/example_benchfig.png" alt="Example benchmark figure" width="800" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);">
 
 In this example, the plot is labeled with the collision system and other details:
 ```c++
@@ -51,6 +51,6 @@ virtualPad->SetBottomMargin(0.2);
 
 Even a well-labeled figure will still be ambiguous as to what is being plotted. For example, how you define efficiency may differ from another analyzer. It will be useful to include with your benchmark an explainer of each of the various plots that are produced:
 
-<img src="{{ page.root }}/fig/benchmarkplots_explained.png" alt="Benchmark explainer" width="700" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);">
+<img src="{{ page.root }}/fig/benchmarkplots_explained.png" alt="Benchmark explainer" width="800" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);">
 
 
