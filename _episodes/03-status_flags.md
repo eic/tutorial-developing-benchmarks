@@ -13,6 +13,39 @@ keypoints:
 
 We've created a benchmark and tested it with GitLab's CI tools. Now let's explore one of the tools available to us to alert fellow developers when there has been a detrimental change in performance for your benchmark.
 
+To add a status flag, first define a function to set the benchmark status. In this example, the following function was added to the plotting macro:
+
+```c++
+///////////// Set benchmark status!
+int setbenchstatus(double eff){
+        // create our test definition
+        // test_tag
+        common_bench::Test rho_reco_eff_test{
+          {
+            {"name", "rho_reconstruction_efficiency"},
+            {"title", "rho Reconstruction Efficiency for rho -> pi+pi- in the B0"},
+            {"description", "u-channel rho->pi+pi- reconstruction efficiency "
+                       "when both pions should be within B0 acceptance"},
+            {"quantity", "efficiency"},
+            {"target", "0.9"}
+          }
+        };      //these 2 need to be consistent 
+        double eff_target = 0.9;    //going to find a way to use the same variable
+
+        if(eff<0 || eff>1){
+          rho_reco_eff_test.error(-1);
+        }else if(eff > eff_target){
+          rho_reco_eff_test.pass(eff);
+        }else{
+          rho_reco_eff_test.fail(eff);
+        }
+
+        // write out our test data
+        common_bench::write_test(rho_reco_eff_test, "./benchmark_output/u_rho_eff.json");
+	return 0;
+}
+```
+
 In your benchmark directory, create a file titled `benchmark.json`, or copy [this one](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/benchmark.json). The file should contain a name and title for your benchmark, as well as a description:
 ```json
 {
