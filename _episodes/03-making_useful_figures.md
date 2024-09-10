@@ -58,17 +58,37 @@ This document may be written in LaTeX, exported as a PDF, and then uploaded to [
 The way most users will interact with your benchmark is at the level of the artifacts it produces. When others are looking through the plots produced by your benchmark, this description of your figures should be readily available as an artifact itself. To achieve this, you can use this template tex document:
 
 ```tex
+{% raw %}
 %====================================================================%
 %                  BENCH.TEX                                       %
 %           Written by YOUR NAME                                   %
 %====================================================================%
 \documentclass{bench}
-%
+
 % A useful Journal macro
-{% raw %}
 \def\Journal#1#2#3#4{{#1} {\bf #2}, #3 (#4)}
-{% endraw %}
 \NewDocumentCommand{\codeword}{v}{\texttt{\textcolor{black}{#1}}}
+% Some other macros used in the sample text
+\def\st{\scriptstyle}
+\def\sst{\scriptscriptstyle}
+\def\epp{\epsilon^{\prime}}
+\def\vep{\varepsilon}
+\def\vp{{\bf p}}
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\def\eea{\end{eqnarray}}
+\def\CPbar{\hbox{{\rm CP}\hskip-1.80em{/}}}
+
+\begin{document}
+\title{YOUR BENCHMARK NAME Benchmark Figures}
+\maketitle
+
+\codeword{benchmark_plot1.pdf}:
+This figure shows...
+
+\end{document}
+{% endraw %}
 ```
 
 
