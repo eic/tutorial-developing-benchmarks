@@ -115,4 +115,7 @@ cp {input.cls} {output.cls_tmp} # copy to local directory
 ```
 
 
+After pushing these changes, check [GitLab's pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines). View the artifacts for this push, and make sure `bench.pdf` is visible in the `results` directory:
+
+<img src="{{ page.root }}/fig/benchmark_explainer_artifact.png" alt="Benchmark explainer artifact" width="1000" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);">
 
