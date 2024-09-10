@@ -50,5 +50,8 @@ virtualPad->SetBottomMargin(0.2);
 ```
 
 Even a well-labeled figure will still be ambiguous as to what is being plotted. For example, how you define efficiency may differ from another analyzer. It will be useful to include with your benchmark an explainer of each of the various plots that are produced:
+<img src="{{ page.root }}/fig/benchmarkplots_explained.png" alt="Benchmark explainer" width="100">
+
+Full size:
 ![Benchmark explainer]({{ page.root }}/fig/benchmarkplots_explained.png)
 
