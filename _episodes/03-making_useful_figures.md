@@ -7,7 +7,9 @@ questions:
 objectives:
 - "Learn what information is useful to ePIC in developing benchmark artifacts and figures"
 keypoints:
-- "Clearly-labeled figures showing both physics results and detector performance plots will be helpful during detector and software development."
+- "Aim for paper-ready benchmark figures whenever possible"
+- "Clearly label plots with simulation details, and clear axis labels and legends"
+- "If possible, augment the benchmark with an additional explainer document which describes figures in greater detail"
 ---
 
 We've discussed how to plug your analysis script into GitLab's CI, and monitor it using pipelines. We'll now briefly discuss how to make figures for your benchmark that are useful to both yourself and to others. 
@@ -119,3 +121,15 @@ After pushing these changes, check [GitLab's pipelines](https://eicweb.phy.anl.g
 
 <img src="{{ page.root }}/fig/benchmark_explainer_artifact.png" alt="Benchmark explainer artifact" width="1000" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);">
 
+
+## Conclusion
+
+We've discussed ways to make benchmark figures legible and useful to others.
+
+Analyzers should aim to make paper-ready figures that others can use and easily understand.
+
+Including an explainer artifact which describes each figure in detail is encouraged. To do this:
+- Copy [`bench.tex`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.tex) and [`bench.cls`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.cls) to your benchmark: `physics_benchmarks/benchmarks/your_bench/`
+- Edit `bench.tex` with descriptions of each benchmark figure
+- Add a rule (shown above) to your `Snakefile` to compile `bench.tex` and copy the resulting pdf to the `results` directory
+- Check [GitLab's pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines) for the pdf.
