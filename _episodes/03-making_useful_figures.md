@@ -64,9 +64,7 @@ The way most users will interact with your benchmark is at the level of the arti
 %====================================================================%
 \documentclass{bench}
 %
-\NewDocumentCommand{\codeword}{v}{%
-\texttt{\textcolor{black}{#1}}%
-}
+\NewDocumentCommand{\codeword}{v}{\texttt{\textcolor{black}{#1}}}
 ```
 
 
