@@ -49,3 +49,6 @@ And margins were increased to allow for more space for larger axis labels:
 virtualPad->SetBottomMargin(0.2);
 ```
 
+Even a well-labeled figure will still be ambiguous as to what is being plotted. For example, how you define efficiency may differ from another analyzer. It will be useful to include with your benchmark an explainer of each of the various plots that are produced:
+![Benchmark explainer]({{ page.root }}/fig/benchmarkplots_explained.png)
+
