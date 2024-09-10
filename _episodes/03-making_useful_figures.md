@@ -64,6 +64,8 @@ The way most users will interact with your benchmark is at the level of the arti
 %====================================================================%
 \documentclass{bench}
 %
+% A useful Journal macro
+\def\Journal\#1\#2\#3\#4{{\#1} {\bf \#2}, \#3 (\#4)}
 \NewDocumentCommand{\codeword}{v}{\texttt{\textcolor{black}{#1}}}
 ```
 
