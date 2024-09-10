@@ -58,7 +58,17 @@ This document may be written in LaTeX, exported as a PDF, and then uploaded to [
 The way most users will interact with your benchmark is at the level of the artifacts it produces. When others are looking through the plots produced by your benchmark, this description of your figures should be readily available as an artifact itself. To achieve this, you can use this template tex document:
 
 ```tex
-Test
+%====================================================================%
+%                  BENCH.TEX                                       %
+%           Written by YOUR NAME                                   %
+%====================================================================%
+ %\documentclass[final,3p]{elsarticle}
+\documentclass{bench}
+
+
+
+% A useful Journal macro
+\def\Journal#1#2#3#4{{#1} {\bf #2}, #3 (#4)}
 ```
 
 
