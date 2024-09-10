@@ -7,8 +7,8 @@ questions:
 objectives:
 - "Learn what information is useful to ePIC in developing benchmark artifacts and figures"
 keypoints:
-- "Aim for paper-ready benchmark figures whenever possible"
-- "Clearly label plots with simulation details, and clear axis labels and legends"
+- "Create paper-ready benchmark figures whenever possible"
+- "Clearly label plots with simulation details, and large axis labels and legends"
 - "If possible, augment the benchmark with an additional explainer document which describes figures in greater detail"
 ---
 
@@ -128,8 +128,8 @@ We've discussed ways to make benchmark figures legible and useful to others.
 
 Analyzers should aim to make paper-ready figures that others can use and easily understand.
 
-Including an explainer artifact which describes each figure in detail is encouraged. To do this:
+Analyzers should consider including an explainer artifact which describes each figure in detail. To do this:
 - Copy [`bench.tex`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.tex) and [`bench.cls`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/bench.cls) to your benchmark: `physics_benchmarks/benchmarks/your_bench/`
 - Edit `bench.tex` with descriptions of each benchmark figure
-- Add a rule (shown above) to your `Snakefile` to compile `bench.tex` and copy the resulting pdf to the `results` directory
+- Add a rule (shown above) to your `Snakefile` to compile `bench.tex`
 - Check [GitLab's pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines) for the pdf.
