@@ -1,5 +1,5 @@
 ---
-title: "Excercise 1: Setting up your first benchmark"
+title: "Exercise 1: Setting up your first benchmark"
 teaching: 20
 exercises: 10
 questions:
