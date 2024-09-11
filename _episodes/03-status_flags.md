@@ -1,5 +1,5 @@
 ---
-title: "Excercise 3: Adding a Status Flag"
+title: "Exercise 3: Adding a Status Flag"
 teaching: 10
 exercises: 10
 questions:
