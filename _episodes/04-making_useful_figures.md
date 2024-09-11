@@ -116,6 +116,12 @@ cp {input.cls} {output.cls_tmp} # copy to local directory
 """
 ```
 
+And make sure that the `analyze` rule in your `config.yml` calls the snakemake compilation rule:
+
+```yml
+    - snakemake --cores 1 yourbench_compile_manual
+```
+
 
 After pushing these changes, check [GitLab's pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines). View the artifacts for this push, and make sure `bench.pdf` is visible in the `results` directory:
 
