@@ -13,6 +13,17 @@ keypoints:
 
 We've created a benchmark and tested it with GitLab's CI tools. Now let's explore one of the tools available to us to alert fellow developers when there has been a detrimental change in performance for your benchmark.
 
+## What is a Status Flag?
+
+A typical benchmark might have 5 to 20 figures which each may or may not be useful in understanding detector and algorithm performance. Developers need rapid feedback when making changes to the tracking software, changing the detector geometry and so on.
+
+As a benchmark developer, the way you can design this into your benchmark is with a status flag. Status flags are binary pass/fail flags which are summarized at the end of a pipeline. These allow other developers to quickly identify any detrimental changes they may have made to the EIC software environment.
+
+At the completion of one of GitLab's pipelines, the status flags from each benchmark are gathered and summarized like this one:
+<img src="{{ page.root }}/fig/example_status.png" alt="Status flag example" width="500">
+
+## Adding a Status Flag to Your Benchmark
+
 To add a status flag, first define a function to set the benchmark status. In this example, the following function was added to the plotting macro `plot_benchmark.C`:
 
 ```c++
