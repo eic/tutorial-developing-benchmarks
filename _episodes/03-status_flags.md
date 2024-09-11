@@ -74,6 +74,7 @@ double reconstuctionEfficiency = (1.0*h_VM_mass_REC_etacut->Integral(minbineff,m
 setbenchstatus(reconstuctionEfficiency);
 ```
 
+Now every time the plotting macro is run, it will generate the `json` file `benchmark_output/u_rho_eff.json` with this status flag. In order propagate this flag through the pipeline, you need also to create a top-level `json` file which will collect all status flags in your benchmark. 
 
 In your benchmark directory, create a file titled `benchmark.json`, or copy [this one](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/benchmark.json). The file should contain a name and title for your benchmark, as well as a description:
 ```json
@@ -84,4 +85,24 @@ In your benchmark directory, create a file titled `benchmark.json`, or copy [thi
   "target": "0.9"
 }
 ```
-For the `target`, specify a threshold number that the benchmark should achieve every time it runs.
+
+The status flags from your benchmark are all collected and summarized in the `collect` stage of the pipeline. To do this, make sure the `config.yml` at `physics_benchmarks/benchmarks/your_benchmark/config.yml` includes the following rule:
+```yml
+your_benchmark:results:
+  stage: collect
+  needs: ["your_benchmark:analyze"]
+  script:
+     - collect_tests.py your_benchmark
+     - echo "Finished collecting!"
+```
+
+To keep the status flags as artifacts, also add these lines to the end of the `analyze` rule in your `config.yml`
+```yml
+    - echo "Finished, copying over json now"
+    - cp benchmark_output/your_benchmark_flag.json results/your_benchmark/
+    - echo "Finished copying!" 
+    - snakemake --cores 1 yourbench_compile_manual
+```
+
+
+
