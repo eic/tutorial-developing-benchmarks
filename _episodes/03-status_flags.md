@@ -22,6 +22,15 @@ As a benchmark developer, the way you can design this into your benchmark is wit
 At the completion of one of GitLab's pipelines, the status flags from each benchmark are gathered and summarized like this one:
 <img src="{{ page.root }}/fig/example_status.png" alt="Status flag example" width="500">
 
+You can think about what quantities might be relevant to monitor. For example, since the u-channel rho benchmark is being used to evaluate the performance of the B0 trackers, this benchmark has a status flag assigned to the efficiency of rho reconstruction within the B0. In the April campaign, this efficiency was observed to be at roughly 95%. A flag was set such that if the efficiency dropped below 90%, it would indicate notable degredation of the performance of far-forward tracking.
+
+Depending on your observable, you might set a status flag on:
+- the mass width of a reconstructed particle
+- reconstructed momentum resolution
+- energy resolution in a calorimeter
+
+Just remember that a status flag that is raised too often stops being alarming to developers. So try to leave some margin for error, and check in on the benchmark's performance every so often.
+
 ## Adding a Status Flag to Your Benchmark
 
 To add a status flag, first define a function to set the benchmark status. In this example, the following function was added to the plotting macro `plot_benchmark.C`:
