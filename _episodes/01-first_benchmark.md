@@ -19,8 +19,13 @@ Benchmarks are currently organized into two repositories:
 Let's make a detector benchmark. We start by cloning the git repository
 
 ```bash
-git clone git@github.com:eic/detector_benchmarks.git
+git clone https://github.com/eic/detector_benchmarks.git
 cd detector_benchmarks
+```
+or 
+```bash
+git clone https://github.com/eic/physics_benchmarks.git
+cd physics_benchmarks
 ```
 
 (If you get an error here, you might need to set up your SSH keys.)
@@ -50,6 +55,7 @@ mkdir benchmarks/backwards_ecal
 
 The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/backwards_ecal/config.yml` with the following contents:
 
+For a detector benchmark:
 ~~~
 sim:ecal_backwards_electron:
   extends: .det_benchmark 
@@ -72,6 +78,54 @@ bench:ecal_backwards_resolution:
   script:
     - echo "I will be analyzing events here!"
     - echo "Our intelligence reports that the electron mass is $(cat $LOCAL_DATA_PATH/electron_mass)"
+~~~
+{: .language-yaml }
+
+For a physics benchmark:
+~~~
+your_benchmark:compile:
+  extends: .phy_benchmark 
+  stage: compile
+  script:
+    - echo "You can compile your code here!"
+
+your_benchmark:generate:
+  extends: .phy_benchmark 
+  stage: generate
+  script:
+    - echo "I will generate events here!"
+    - echo "Add event-generator code to do this"
+
+your_benchmark:simulate:
+  extends: .phy_benchmark
+  stage: simulate
+  script:
+    - echo "I will simulate detector response here!"
+
+your_benchmark:reconstruct:
+  extends: .phy_benchmark
+  stage: reconstruct
+  script:
+    - echo "Event reconstruction here!"
+
+your_benchmark:analyze:
+  extends: .phy_benchmark
+  stage: analyze
+  needs:
+    - ["your_benchmark:reconstruct"]
+  script:
+    - echo "I will analyze events here!"
+    - echo "This step requires that the reconstruct step be completed"
+
+your_benchmark:collect
+  extends: .phy_benchmark
+  stage: collect
+  needs:
+    - ["your_benchmark:analyze"]
+  script:
+    - echo "I will collect results here!"
+    - echo "This step requires that the analyze step be completed"
+
 ~~~
 {: .language-yaml }
 
