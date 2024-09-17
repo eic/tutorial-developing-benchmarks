@@ -33,7 +33,7 @@ cd physics_benchmarks
 Please create a feature branch in your local repository:
 
 ```bash
-git checkout -b pr/backwards_ecal_<mylastname>
+git checkout -b pr/your_benchmark_<mylastname>
 ```
 
 *(Replace `<mylastname>` with your last name or any other nickname.)*
@@ -50,34 +50,32 @@ b0_tracker  backgrounds  barrel_ecal  barrel_hcal  material_maps  others  pid  t
 Now, create a new directory for your benchmark
 
 ```bash
-mkdir benchmarks/backwards_ecal
+mkdir benchmarks/your_benchmark
 ```
 
-The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/backwards_ecal/config.yml` with the following contents:
+The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml` with the following contents:
 
 For a detector benchmark:
 ~~~
-sim:ecal_backwards_electron:
+sim:your_benchmark_electron:
   extends: .det_benchmark 
   stage: simulate
   script:
     - echo "I will be simulating some electron events here!"
-    - echo "0.511 MeV" >> $LOCAL_DATA_PATH/electron_mass
 
-sim:ecal_backwards_photon:
+sim:your_benchmark_photon:
   extends: .det_benchmark 
   stage: simulate
   script:
     - echo "I will be simulating some photon events here!"
 
-bench:ecal_backwards_resolution:
+bench:your_benchmark_resolution:
   extends: .det_benchmark
   stage: benchmarks
   needs:
-    - ["sim:ecal_backwards_electron", "sim:ecal_backwards_photon"]
+    - ["sim:your_benchmark_electron", "sim:your_benchmark_photon"]
   script:
     - echo "I will be analyzing events here!"
-    - echo "Our intelligence reports that the electron mass is $(cat $LOCAL_DATA_PATH/electron_mass)"
 ~~~
 {: .language-yaml }
 
@@ -153,7 +151,7 @@ include:
   - local: 'benchmarks/others/config.yml'
 ```
 
-Insert an appropriate line for your newly created `benchmarks/backwards_ecal/config.yml`. Save and close.
+Insert an appropriate line for your newly created `benchmarks/your_benchmark/config.yml`. Save and close.
 
 The change that you've just made needs to be also staged. We will now learn a cool git trick. Run this:
 
@@ -168,18 +166,18 @@ Here `-p` stands for `--patch`. This will display unstaged changes to the local 
 Even though our benchmark doesn't do anything yet, let's submit it to the CI and see it run and do nothing useful. The way to do it is to submit a pull request. We first commit the staged changes to the current branch:
 
 ```shell
-git commit -m "add benchmarks/ecal_backwards"
+git commit -m "add benchmarks/your_benchmark"
 ```
 
 And push that branch from the local repository to the shared repository on GitHub (referenced to as `origin`):
 
 ```shell
-git push origin pr/backwards_ecal_<mylastname>
+git push origin pr/your_benchmark_<mylastname>
 ```
 *(Replace `<mylastname>` with your last name.)*
 
-1. This should instruct you to go to `https://github.com/eic/detector_benchmarks/compare/master...pr/backwards_ecal_<mylastname>` to create a PR. Follow that link.
-3. ![Add a title]({{ page.root }}/fig/github_add_a_title.png) Provide a title like "Adding benchmark for backwards ecal".
+1. This should instruct you to go to `https://github.com/eic/detector_benchmarks/compare/master...pr/your_benchmark_<mylastname>` to create a PR. Follow that link.
+3. ![Add a title]({{ page.root }}/fig/github_add_a_title.png) Provide a title like "Adding benchmark for ...".
 4. ![Create draft pull request]({{ page.root }}/fig/github_switch_to_draft.png) Since this work is not yet complete, open dropdown menu of the "Create pull requst" button and select "Create draft pull request"
 5. ![Draft pull request]({{ page.root }}/fig/github_draft_pull_request.png) Click "Draft pull request"
 
