@@ -16,13 +16,8 @@ Benchmarks are currently organized into two repositories:
 - [https://github.com/eic/detector_benchmarks](https://github.com/eic/detector_benchmarks)
 - [https://github.com/eic/physics_benchmarks](https://github.com/eic/physics_benchmarks)
 
-Let's make a detector benchmark. We start by cloning the git repository
+Let's make a physics benchmark. We start by cloning the git repository
 
-```bash
-git clone https://github.com/eic/detector_benchmarks.git
-cd detector_benchmarks
-```
-or 
 ```bash
 git clone https://github.com/eic/physics_benchmarks.git
 cd physics_benchmarks
@@ -53,33 +48,9 @@ Now, create a new directory for your benchmark
 mkdir benchmarks/your_benchmark
 ```
 
-The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml` with the following contents:
+The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml`. For a detector benchmark, start with [this `config.yml`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/config.yml).
 
-For a detector benchmark:
-~~~
-sim:your_benchmark_electron:
-  extends: .det_benchmark 
-  stage: simulate
-  script:
-    - echo "I will be simulating some electron events here!"
-
-sim:your_benchmark_photon:
-  extends: .det_benchmark 
-  stage: simulate
-  script:
-    - echo "I will be simulating some photon events here!"
-
-bench:your_benchmark_resolution:
-  extends: .det_benchmark
-  stage: benchmarks
-  needs:
-    - ["sim:your_benchmark_electron", "sim:your_benchmark_photon"]
-  script:
-    - echo "I will be analyzing events here!"
-~~~
-{: .language-yaml }
-
-For a physics benchmark:
+For a physics benchmark and to follow along with this tutorial, create a `config.yml` with the following contents:
 ~~~
 your_benchmark:compile:
   extends: .phy_benchmark 
@@ -127,12 +98,15 @@ your_benchmark:collect
 ~~~
 {: .language-yaml }
 
-The basic idea here is that we define three jobs to be run in two steps. The reason for the separation is to allow parallel execution and for them to be presented nicely in the user interface.
+The basic idea here is that we are defining the rules for each step of the [pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102530). A few things to note about the `config.yml`.
+- The rules take basic bash script as input. Anything you would write in a bash script you can put in the script section of a rule in the `config.yml` file.
+- Each rule does not need to do something. In the example `config.yml` given here, each rule is just printing a statement.
+- Each rule corresponds to a stage in GitLab's pipelines. So the collect rule in your `config.yml` tells the pipeline what to do when it gets to the collect stage of the [pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102530).
 
 Since we've just created a new file, we need to let git know about it by staging it:
 
 ```shell
-git add benchmarks/backwards_ecal/config.yml
+git add benchmarks/your_benchmark/config.yml
 ```
 
 We also need to let the CI system know that we want it to execute steps that we've just defined. For that, it has to be included from the `.gitlab-ci.yml` file. Open it in your text editor of choice and locate lines that look like:
