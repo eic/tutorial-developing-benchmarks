@@ -113,19 +113,46 @@ We also need to let the CI system know that we want it to execute steps that we'
 
 ```yaml
 include:
+  - local: 'benchmarks/diffractive_vm/config.yml'
+  - local: 'benchmarks/dis/config.yml'
+  - local: 'benchmarks/dvmp/config.yml'
+  - local: 'benchmarks/dvcs/config.yml'
+  - local: 'benchmarks/tcs/config.yml'
+  - local: 'benchmarks/u_omega/config.yml'
+  - local: 'benchmarks/single/config.yml'
   - local: 'benchmarks/backgrounds/config.yml'
-  - local: 'benchmarks/tracking_detectors/config.yml'
-  - local: 'benchmarks/barrel_ecal/config.yml'
-  - local: 'benchmarks/barrel_hcal/config.yml'
-  - local: 'benchmarks/zdc/config.yml'
-  - local: 'benchmarks/material_maps/config.yml'
-  - local: 'benchmarks/pid/config.yml'
-  - local: 'benchmarks/timing/config.yml'
-  - local: 'benchmarks/b0_tracker/config.yml'
-  - local: 'benchmarks/others/config.yml'
 ```
 
-Insert an appropriate line for your newly created `benchmarks/your_benchmark/config.yml`. Save and close.
+Insert an appropriate line for your newly created `benchmarks/your_benchmark/config.yml`. We will be doing a lot of testing using GitLab's pipelines. We don't need GitLab to simulate every other benchmark while we're still testing ours. To speed things up, you can comment out most other benchmarks. Consider leaving a few uncommented to make sure everything is working right:
+```yaml
+include:
+  #- local: 'benchmarks/diffractive_vm/config.yml'
+  - local: 'benchmarks/dis/config.yml'
+    #- local: 'benchmarks/dvmp/config.yml'
+  #- local: 'benchmarks/dvcs/config.yml'
+  #- local: 'benchmarks/tcs/config.yml'
+  #- local: 'benchmarks/u_omega/config.yml'
+  - local: 'benchmarks/single/config.yml'
+  #- local: 'benchmarks/backgrounds/config.yml'
+  - local: 'benchmarks/your_benchmark/config.yml'
+```
+
+In order to make your benchmark produce artifacts, also add your benchmark to this section, and comment out any benchmarks you commented out above: 
+```yaml
+summary:
+  stage: finish
+  needs:
+    #- "diffractive_vm:results"
+    - "dis:results"
+    #- "dvcs:results"
+    #- "tcs:results"
+    #- "u_omega:results"
+    - "single:results"
+    #- "backgrounds:results"
+    - "your_benchmark:results"
+```
+Save and close the file.
+
 
 The change that you've just made needs to be also staged. We will now learn a cool git trick. Run this:
 
