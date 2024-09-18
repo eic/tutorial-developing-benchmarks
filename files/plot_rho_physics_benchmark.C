@@ -31,22 +31,22 @@ int setbenchstatus(double eff){
 }
 
 void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.root"){
-	Ssiz_t dotPosition = filename.Last('.');
-	TString figure_directory = filename(0, dotPosition);
-	figure_directory += "_figures";	
-	
-	TFile* file = new TFile(filename);
-	TString vm_label="#rho^{0}";
-	TString daug_label="#pi^{#plus}#pi^{#minus}";
-	//mass distribution
+  Ssiz_t dotPosition = filename.Last('.');
+  TString figure_directory = filename(0, dotPosition);
+  figure_directory += "_figures";	
+  
+  TFile* file = new TFile(filename);
+  TString vm_label="#rho^{0}";
+  TString daug_label="#pi^{#plus}#pi^{#minus}";
+  //mass distribution
   TH1D* h_VM_mass_MC = (TH1D*) file->Get("h_VM_mass_MC");
   TH1D* h_VM_mass_REC = (TH1D*) file->Get("h_VM_mass_REC");
-	TH1D* h_VM_mass_REC_justpions = (TH1D*) file->Get("h_VM_mass_REC_justpions");
-	//mass distribution within B0
-	TH1D* h_VM_mass_MC_etacut = (TH1D*) file->Get("h_VM_mass_MC_etacut");
+  TH1D* h_VM_mass_REC_justpions = (TH1D*) file->Get("h_VM_mass_REC_justpions");
+  //mass distribution within B0
+  TH1D* h_VM_mass_MC_etacut = (TH1D*) file->Get("h_VM_mass_MC_etacut");
   TH1D* h_VM_mass_REC_etacut = (TH1D*) file->Get("h_VM_mass_REC_etacut");
-	//efficiencies
-	TProfile2D* h_effEtaPtPi = (TProfile2D*) file->Get("h_effEtaPtPi");
+  //efficiencies
+  TProfile2D* h_effEtaPtPi = (TProfile2D*) file->Get("h_effEtaPtPi");
   TProfile2D* h_effEtaPtPip = (TProfile2D*) file->Get("h_effEtaPtPip"); 
   TProfile2D* h_effEtaPtPim = (TProfile2D*) file->Get("h_effEtaPtPim"); 
   TProfile2D* h_effPhiEtaPi = (TProfile2D*) file->Get("h_effPhiEtaPi"); 
@@ -54,42 +54,42 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   TProfile2D* h_effPhiEtaPim = (TProfile2D*) file->Get("h_effPhiEtaPim"); 	
 
 
-	TLatex* r42 = new TLatex(0.18, 0.91, "ep 10#times100 GeV");
-	r42->SetNDC();
-	r42->SetTextSize(22);
-	r42->SetTextFont(43);
-	r42->SetTextColor(kBlack);
+  TLatex* r42 = new TLatex(0.18, 0.91, "ep 10#times100 GeV");
+  r42->SetNDC();
+  r42->SetTextSize(22);
+  r42->SetTextFont(43);
+  r42->SetTextColor(kBlack);
 
-	TLatex* r43 = new TLatex(0.9,0.91, "#bf{EPIC}");
-	r43->SetNDC();
-	//r43->SetTextSize(0.04);
-	r43->SetTextSize(22);
+  TLatex* r43 = new TLatex(0.9,0.91, "#bf{EPIC}");
+  r43->SetNDC();
+  //r43->SetTextSize(0.04);
+  r43->SetTextSize(22);
 
-	TLatex* r44 = new TLatex(0.53, 0.78, "10^{-3}<Q^{2}<10 GeV^{2}, W>2 GeV");
-	r44->SetNDC();
-	r44->SetTextSize(20);
-	r44->SetTextFont(43);
-	r44->SetTextColor(kBlack);
+  TLatex* r44 = new TLatex(0.53, 0.78, "10^{-3}<Q^{2}<10 GeV^{2}, W>2 GeV");
+  r44->SetNDC();
+  r44->SetTextSize(20);
+  r44->SetTextFont(43);
+  r44->SetTextColor(kBlack);
 
-	TLatex* r44_2 = new TLatex(0.5, 0.83, ""+vm_label+" #rightarrow "+daug_label+" eSTARlight");
-	r44_2->SetNDC();
-	r44_2->SetTextSize(30);
-	r44_2->SetTextFont(43);
-	r44_2->SetTextColor(kBlack);
+  TLatex* r44_2 = new TLatex(0.5, 0.83, ""+vm_label+" #rightarrow "+daug_label+" eSTARlight");
+  r44_2->SetNDC();
+  r44_2->SetTextSize(30);
+  r44_2->SetTextFont(43);
+  r44_2->SetTextColor(kBlack);
 
-	TLegend *w7 = new TLegend(0.58,0.68,0.93,0.76);
-	w7->SetLineColor(kWhite);
-	w7->SetFillColor(0);
-	w7->SetTextSize(17);
-	w7->SetTextFont(45);
-	w7->AddEntry(h_t_MC, "eSTARlight "+vm_label+" MC ", "L");
-	w7->AddEntry(h_t_REC, "eSTARlight "+vm_label+" RECO ", "P");
+  TLegend *w7 = new TLegend(0.58,0.68,0.93,0.76);
+  w7->SetLineColor(kWhite);
+  w7->SetFillColor(0);
+  w7->SetTextSize(17);
+  w7->SetTextFont(45);
+  w7->AddEntry(h_t_MC, "eSTARlight "+vm_label+" MC ", "L");
+  w7->AddEntry(h_t_REC, "eSTARlight "+vm_label+" RECO ", "P");
 
-	TCanvas* c2 = new TCanvas("c2","c2",1,1,600,600);
+  TCanvas* c2 = new TCanvas("c2","c2",1,1,600,600);
   gPad->SetTicks();
   gPad->SetLeftMargin(0.18);
   gPad->SetBottomMargin(0.18);
-	gPad->SetTopMargin(0.10);
+  gPad->SetTopMargin(0.10);
   gPad->SetRightMargin(0.01);
   TH1D* base2 = makeHist("base2", "", "#pi^{#plus}#pi^{#minus} inv. mass (GeV)", "counts", 100,0.05,2.05,kBlack);
   base2->GetYaxis()->SetRangeUser(0.5, 1.2*(h_VM_mass_MC->GetMaximum()));
@@ -101,32 +101,32 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.5);
   base2->GetXaxis()->SetNdivisions(4,4,0);
   base2->GetYaxis()->SetNdivisions(5,5,0);
-	base2->GetYaxis()->SetTitleOffset(1.3);
+  base2->GetYaxis()->SetTitleOffset(1.3);
   base2->Draw();
 
-	TH1D* h_VM_mass_REC_justprotons = (TH1D*)h_VM_mass_REC->Clone("h_VM_mass_REC_justprotons");
-	for(int ibin=1; ibin<h_VM_mass_REC_justprotons->GetNbinsX(); ibin++){
-	  h_VM_mass_REC_justprotons->SetBinContent(ibin,h_VM_mass_REC_justprotons->GetBinContent(ibin) - h_VM_mass_REC_justpions->GetBinContent(ibin));
-	}
+  TH1D* h_VM_mass_REC_justprotons = (TH1D*)h_VM_mass_REC->Clone("h_VM_mass_REC_justprotons");
+  for(int ibin=1; ibin<h_VM_mass_REC_justprotons->GetNbinsX(); ibin++){
+    h_VM_mass_REC_justprotons->SetBinContent(ibin,h_VM_mass_REC_justprotons->GetBinContent(ibin) - h_VM_mass_REC_justpions->GetBinContent(ibin));
+  }
 
-	h_VM_mass_MC->SetFillColorAlpha(kBlack,0.2);
+  h_VM_mass_MC->SetFillColorAlpha(kBlack,0.2);
   h_VM_mass_REC->SetFillColorAlpha(kMagenta,0.2);
-	h_VM_mass_MC->SetLineColor(kBlack);
+  h_VM_mass_MC->SetLineColor(kBlack);
   h_VM_mass_REC->SetLineColor(kMagenta);
-	h_VM_mass_REC_justpions->SetLineColor(kViolet+10);
-	h_VM_mass_REC_justprotons->SetLineColor(kRed);
-	h_VM_mass_MC->SetLineWidth(2);
+  h_VM_mass_REC_justpions->SetLineColor(kViolet+10);
+  h_VM_mass_REC_justprotons->SetLineColor(kRed);
+  h_VM_mass_MC->SetLineWidth(2);
   h_VM_mass_REC->SetLineWidth(2);
-	h_VM_mass_REC_justpions->SetLineWidth(2);
-	h_VM_mass_REC_justprotons->SetLineWidth(2);
+  h_VM_mass_REC_justpions->SetLineWidth(2);
+  h_VM_mass_REC_justprotons->SetLineWidth(2);
 
-	h_VM_mass_REC->Scale(3.0);
-	h_VM_mass_REC_justpions->Scale(3.0);
-	h_VM_mass_REC_justprotons->Scale(3.0);
+  h_VM_mass_REC->Scale(3.0);
+  h_VM_mass_REC_justpions->Scale(3.0);
+  h_VM_mass_REC_justprotons->Scale(3.0);
 
   h_VM_mass_MC->Draw("HIST E same");
   h_VM_mass_REC->Draw("HIST E same");
-	h_VM_mass_REC_justpions->Draw("HIST same");
+  h_VM_mass_REC_justpions->Draw("HIST same");
   h_VM_mass_REC_justprotons->Draw("HIST same");
 
   r42->Draw("same");
@@ -145,16 +145,16 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   w8->AddEntry(h_VM_mass_REC_justprotons, vm_label+" reco.#times3 (#pi^{#minus}p)", "L");
   w8->Draw("same");
 
-	TString figure1name = figure_directory+"/benchmark_rho_mass.pdf";
+  TString figure1name = figure_directory+"/benchmark_rho_mass.pdf";
   c2->Print(figure1name);
 
 
-	///////////////////// Figure 4
+  ///////////////////// Figure 4
   TCanvas* c4 = new TCanvas("c4","c4",1,1,600,600);
   gPad->SetTicks();
   gPad->SetLeftMargin(0.18);
   gPad->SetBottomMargin(0.18);
-	gPad->SetTopMargin(0.10);
+  gPad->SetTopMargin(0.10);
   gPad->SetRightMargin(0.01);
   TH1D* base4 = makeHist("base4", "", "#pi^{#plus}#pi^{#minus} inv. mass (GeV)", "counts", 100,0.05,2.05,kBlack);
   base4->GetYaxis()->SetRangeUser(0.5, 1.2*(h_VM_mass_MC_etacut->GetMaximum()));
@@ -179,9 +179,9 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   h_VM_mass_MC_etacut->Draw("HIST E same");
   h_VM_mass_REC_etacut->Draw("HIST E same");
 
-	double minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
+  double minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
   double maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
-	double thiseff = 100.0*(1.0*h_VM_mass_REC_etacut->Integral(minbineff,maxbineff))/(1.0*h_VM_mass_MC_etacut->Integral(minbineff,maxbineff));
+  double thiseff = 100.0*(1.0*h_VM_mass_REC_etacut->Integral(minbineff,maxbineff))/(1.0*h_VM_mass_MC_etacut->Integral(minbineff,maxbineff));
 
   r42->Draw("same");
   r43->Draw("same");
@@ -222,13 +222,13 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
 
   ///////////////////// Figure 5
   TCanvas* c5 = new TCanvas("c5","c5",1,1,700,560);
-	TPad* p5 = new TPad("p5","Pad5",0.,0.,1.,1.);
+  TPad* p5 = new TPad("p5","Pad5",0.,0.,1.,1.);
   p5->Divide(3,2,0,0);
-	p5->Draw();
-	gStyle->SetPalette(kBlueRedYellow);
-	gStyle->SetOptStat(0);	
+  p5->Draw();
+  gStyle->SetPalette(kBlueRedYellow);
+  gStyle->SetOptStat(0);	
 
-	h_effEtaPtPi  ->GetXaxis()->SetLabelSize(h_effEtaPtPi  ->GetXaxis()->GetLabelSize()*1.8);
+  h_effEtaPtPi  ->GetXaxis()->SetLabelSize(h_effEtaPtPi  ->GetXaxis()->GetLabelSize()*1.8);
   h_effEtaPtPip ->GetXaxis()->SetLabelSize(h_effEtaPtPip ->GetXaxis()->GetLabelSize()*1.8);
   h_effEtaPtPim ->GetXaxis()->SetLabelSize(h_effEtaPtPim ->GetXaxis()->GetLabelSize()*1.8);
   h_effEtaPtPi  ->GetYaxis()->SetLabelSize(h_effEtaPtPi  ->GetYaxis()->GetLabelSize()*1.8);
@@ -241,7 +241,7 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   h_effPhiEtaPim->GetZaxis()->SetLabelSize(h_effPhiEtaPim->GetZaxis()->GetLabelSize()*0.5);
   h_effPhiEtaPim->GetZaxis()->SetTitleSize(h_effPhiEtaPim->GetZaxis()->GetTitleSize()*0.5);
 
-	fixedFontHist1D(h_effEtaPtPi,1.,1.2);
+  fixedFontHist1D(h_effEtaPtPi,1.,1.2);
   fixedFontHist1D(h_effEtaPtPip,1.,1.2);
   fixedFontHist1D(h_effEtaPtPim,1.,1.2);
   fixedFontHist1D(h_effPhiEtaPi,1.,1.2);
@@ -260,7 +260,7 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   h_effEtaPtPi->GetXaxis()->SetNdivisions(5);
   h_effEtaPtPi->GetYaxis()->SetNdivisions(5);
   h_effEtaPtPi->SetContour(99);
-	h_effEtaPtPi->Draw("COLZ");
+  h_effEtaPtPi->Draw("COLZ");
   TLatex* pilabel = new TLatex(0.81, 0.75, "#pi^{#pm}");
   pilabel->SetNDC();
   pilabel->SetTextSize(40);
@@ -306,7 +306,7 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   p53->SetRightMargin(0.2);
   p53->SetLeftMargin(0);
   p53->SetBottomMargin(0.2);
-	h_effEtaPtPim->SetTitle(";#eta;;efficiency");
+  h_effEtaPtPim->SetTitle(";#eta;;efficiency");
   h_effEtaPtPim->GetXaxis()->SetRangeUser(4.05,6.05);
   h_effEtaPtPim->GetYaxis()->SetRangeUser(0,1.7);
   h_effEtaPtPim->GetZaxis()->SetRangeUser(0,1);
@@ -321,7 +321,7 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   pimlabel->SetTextColor(kBlack);
   pimlabel->Draw("same");
   TLatex* r43fig5 = new TLatex(0.66,0.93, "#bf{EPIC}");
-	r43fig5->SetNDC();
+  r43fig5->SetNDC();
   r43fig5->SetTextSize(15);
   r43fig5->SetTextFont(43);
   r43fig5->SetTextColor(kBlack);
@@ -415,6 +415,6 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   TString figure3name = figure_directory+"/benchmark_rho_efficiencies.pdf";
   c5->Print(figure3name);
 
-	double rhorecoeff = thiseff/100.0;
-	setbenchstatus(rhorecoeff);
+  double rhorecoeff = thiseff/100.0;
+  setbenchstatus(rhorecoeff);
 }
