@@ -65,7 +65,37 @@ fi
 
 This script uses ddsim to simulate the detector response to your benchmark events.
 
-## Simulating Events
+Finally create a script named [`benchmarks/your_benchmark/reconstruct.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/reconstruct.sh`) to manage the reconstruction:
+```bash
+#!/bin/bash
+source strict-mode.sh
+
+source benchmarks/your_benchmark/setup.config $*
+
+# Reconstruct
+if [ ${RECO} == "eicrecon" ] ; then
+  eicrecon ${OUTPUT_FILE} -Ppodio:output_file=${REC_FILE}
+  if [[ "$?" -ne "0" ]] ; then
+    echo "ERROR running eicrecon"
+    exit 1
+  fi
+fi
+
+if [[ ${RECO} == "juggler" ]] ; then
+  gaudirun.py options/reconstruction.py || [ $? -eq 4 ]
+  if [ "$?" -ne "0" ] ; then
+    echo "ERROR running juggler"
+    exit 1
+  fi
+fi
+
+if [ -f jana.dot ] ; then cp jana.dot ${REC_FILE_BASE}.dot ; fi
+
+#rootls -t ${REC_FILE_BASE}.tree.edm4eic.root
+rootls -t ${REC_FILE}
+```
+
+## The "simulate" rule
 We now fill out the `simulate` rule in GitLab's pipelines. Currently the instructions for this rule should be contained in `benchmarks/your_benchmark/config.yml` as: 
 ```yaml
 your_benchmark:simulate:
@@ -126,4 +156,66 @@ your_benchmark:simulate:
       - runner_system_failure
 ```
 
-Benchmarks are currently organized into two repositories:
+## The "reconstruct" rule
+
+Now the `reconstruct` rule should look like this:
+```yaml
+your_benchmark:reconstruct:
+  extends: .phy_benchmark
+  stage: reconstruct
+  script:
+    - echo "Event reconstruction here!"
+```
+
+We need the `simulate` rule to finish before starting the reconstruction so add the line `needs: ["your_benchmark:simulate"]` below `extends: .phy_benchmark`.
+
+In a new line below that, add a timeout: `timeout: 10 hour`.
+
+Again in the script section, source the `setup.config` file:
+```yaml
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+```
+
+Now add instructions to do the reconstruction if not using the simulation campaign:
+```yaml
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign so skipping this step!"
+    - else
+    -     echo "Running eicrecon!"
+    -     bash benchmarks/your_benchmark/reconstruct.sh
+    - fi
+    - echo "Finished reconstruction"
+```
+
+Finally add an instruction to retry if this fails:
+```yaml
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+```
+
+The `reconstruct` rule should now look like this:
+```yaml
+your_benchmark:reconstruct:
+  stage: reconstruct
+  extends: .phy_benchmark
+  needs: ["your_benchmark:simulate"]
+  timeout: 10 hour
+  script:
+    - echo "Event reconstruction here!"
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign so skipping this step!"
+    - else
+    -     echo "Running eicrecon!"
+    -     bash benchmarks/your_benchmark/reconstruct.sh
+    - fi
+    - echo "Finished reconstruction"
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+```
