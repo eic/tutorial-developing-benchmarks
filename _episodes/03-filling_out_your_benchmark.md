@@ -1,12 +1,16 @@
 ---
-title: "Exercise 5: Filling out your benchmark"
+title: "Exercise 3: Filling out your benchmark"
 teaching: 20
 exercises: 10
-questions:
+questions: How do we fill in each stage of the benchmark pipeline?
 objectives:
 - "Fill out the many steps of your benchmark"
-- "Learn basics of running on eicweb GitLab CI"
+- "Collect templates for the benchmark stages"
 keypoints:
+- Create `setup.config` to switch between using the simulation campaign and re-simulating events
+- Each stage of the benchmark pipeline is defined in `config.yml`
+- `config.yml` takes normal bash scripts as input
+- Copy resulting figures over to the `results` directory to turn them into artifacts
 ---
 
 In this lesson we will be beefing up our benchmark by filling out several of the pipeline stages.
