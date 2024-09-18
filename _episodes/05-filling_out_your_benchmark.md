@@ -39,7 +39,6 @@ Also create a new file [`benchmarks/your_benchmark/simulate.sh](https://github.c
 ```bash
 #!/bin/bash
 source strict-mode.sh
-
 source benchmarks/your_benchmark/setup.config $*
 
 if [ -f ${INPUT_FILE} ]; then
@@ -65,11 +64,10 @@ fi
 
 This script uses ddsim to simulate the detector response to your benchmark events.
 
-Finally create a script named [`benchmarks/your_benchmark/reconstruct.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/reconstruct.sh`) to manage the reconstruction:
+Create a script named [`benchmarks/your_benchmark/reconstruct.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/reconstruct.sh`) to manage the reconstruction:
 ```bash
 #!/bin/bash
 source strict-mode.sh
-
 source benchmarks/your_benchmark/setup.config $*
 
 # Reconstruct
@@ -94,6 +92,33 @@ if [ -f jana.dot ] ; then cp jana.dot ${REC_FILE_BASE}.dot ; fi
 #rootls -t ${REC_FILE_BASE}.tree.edm4eic.root
 rootls -t ${REC_FILE}
 ```
+
+Finally create a file called [`benchmarks/your_benchmark/analyze.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/analyze.sh`) which will run the analysis and plotting scripts:
+```bash
+#!/bin/bash
+source strict-mode.sh
+source benchmarks/your_benchmark/setup.config $*
+
+OUTPUT_PLOTS_DIR=sim_output/nocampaign
+mkdir -p ${OUTPUT_PLOTS_DIR}
+# Analyze
+command time -v \
+root -l -b -q "benchmarks/your_benchmark/analysis/uchannelrho.cxx+(\"${REC_FILE}\",\"${OUTPUT_PLOTS_DIR}/plots.root\")"
+if [[ "$?" -ne "0" ]] ; then
+  echo "ERROR analysis failed"
+  exit 1
+fi
+
+if [ ! -d "${OUTPUT_PLOTS_DIR}/plots_figures" ]; then
+    mkdir "${OUTPUT_PLOTS_DIR}/plots_figures"
+    echo "${OUTPUT_PLOTS_DIR}/plots_figures directory created successfully."
+else
+    echo "${OUTPUT_PLOTS_DIR}/plots_figures directory already exists."
+fi
+root -l -b -q "benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C(\"${OUTPUT_PLOTS_DIR}/plots.root\")"
+cat benchmark_output/*.json
+```
+
 
 ## The "simulate" rule
 We now fill out the `simulate` rule in GitLab's pipelines. Currently the instructions for this rule should be contained in `benchmarks/your_benchmark/config.yml` as: 
@@ -218,4 +243,68 @@ your_benchmark:reconstruct:
     max: 2
     when:
       - runner_system_failure
+```
+
+## The "analyze" rule
+
+The `analyze` rule in `config.yml` is right now just this:
+```yaml
+your_benchmark:analyze:
+  extends: .phy_benchmark
+  stage: analyze
+  needs:
+    - ["your_benchmark:reconstruct"]
+  script:
+    - echo "I will analyze events here!"
+    - echo "This step requires that the reconstruct step be completed"
+```
+
+First make two directories to contain output from the benchmark analysis and source `setup.config` again:
+```yaml
+    - mkdir -p results/your_benchmark
+    - mkdir -p benchmark_output
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+```
+
+If using the simulation campaign, we can request the rho mass benchmark with snakemake. Once snakemake has finished creating the benchmark figures, we copy them over to `results/your_benchmark/` in order to make them into artifacts:
+```yaml
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign!"
+    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
+```
+
+If not using the simulation campaign, we can just run the `analyze.sh` script and copy the results into `results/your_benchmark/` in order to make them into artifacts:
+```yaml
+    - else
+    -     echo "Not using simulation campaign!"
+    -     bash benchmarks/your_benchmark/analyze.sh
+    -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
+    - fi
+```
+
+The `analyze` rule should now look like this:
+```yaml
+your_benchmark:analyze:
+  extends: .phy_benchmark
+  stage: analyze
+  needs:
+    - ["your_benchmark:reconstruct"]
+  script:
+    - echo "I will be analyzing events here!"
+    - mkdir -p results/your_benchmark
+    - mkdir -p benchmark_output
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign!"
+    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
+    - else
+    -     echo "Not using simulation campaign!"
+    -     bash benchmarks/your_benchmark/analyze.sh
+    -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
+    - fi
+    - echo "Finished copying!" 
 ```
