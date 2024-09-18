@@ -35,7 +35,7 @@ Here we've defined a switch `USE_SIMULATION_CAMPAIGN` which will allow us to alt
 When not using the simulation campaign, the `N_EVENTS` variable defines how many events the benchmark should run.
 The rest of these variables define file names to be used in the benchmark.
 
-Also create a new file [`benchmarks/your_benchmark/simulate.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/simulate.sh`) with the following contents:
+Also create a new file [`benchmarks/your_benchmark/simulate.sh`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/simulate.sh) with the following contents:
 ```bash
 #!/bin/bash
 source strict-mode.sh
@@ -64,7 +64,7 @@ fi
 
 This script uses ddsim to simulate the detector response to your benchmark events.
 
-Create a script named [`benchmarks/your_benchmark/reconstruct.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/reconstruct.sh`) to manage the reconstruction:
+Create a script named [`benchmarks/your_benchmark/reconstruct.sh`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/reconstruct.sh) to manage the reconstruction:
 ```bash
 #!/bin/bash
 source strict-mode.sh
@@ -93,7 +93,7 @@ if [ -f jana.dot ] ; then cp jana.dot ${REC_FILE_BASE}.dot ; fi
 rootls -t ${REC_FILE}
 ```
 
-Finally create a file called [`benchmarks/your_benchmark/analyze.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/analyze.sh`) which will run the analysis and plotting scripts:
+Finally create a file called [`benchmarks/your_benchmark/analyze.sh`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/analyze.sh) which will run the analysis and plotting scripts:
 ```bash
 #!/bin/bash
 source strict-mode.sh
