@@ -35,7 +35,7 @@ Here we've defined a switch `USE_SIMULATION_CAMPAIGN` which will allow us to alt
 When not using the simulation campaign, the `N_EVENTS` variable defines how many events the benchmark should run.
 The rest of these variables define file names to be used in the benchmark.
 
-Also create a new file [benchmarks/your_benchmark/simulate.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/simulate.sh) with the following contents:
+Also create a new file [`benchmarks/your_benchmark/simulate.sh](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/simulate.sh`) with the following contents:
 ```bash
 #!/bin/bash
 source strict-mode.sh
@@ -80,7 +80,7 @@ In a new line below `stage: simulate`, add this: `timeout: 10 hour`.
 
 Now in the `script` section of the rule, add two new lines to source the `setup.config` file:
 ```yaml
-    - config_file=benchmarks/u_rho/setup.config
+    - config_file=benchmarks/your_benchmark/setup.config
     - source $config_file
 ```
 
