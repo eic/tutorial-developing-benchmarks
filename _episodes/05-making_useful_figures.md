@@ -1,5 +1,5 @@
 ---
-title: "Exercise 4: Making Useful Figures"
+title: "Exercise 5: Making Useful Figures"
 teaching: 10
 exercises: 10
 questions:
