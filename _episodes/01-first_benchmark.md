@@ -196,6 +196,10 @@ Click "Details", it will take you to eicweb GitLab instance. The pipeline will s
 
 ![Check running on eicweb]({{ page.root }}/fig/configToPipelines.png)
 
+- This example pipeline is viewable [here](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102686). 
+- All physics benchmark pipelines are here: [https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
+- All detector benchmark pipelines are here: [https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
+
 You can click on individual jobs and see output they produce during running. Our newly created jobs should produce messages in the output. Real scripts could return errors and those would appear as CI failures.
 
 ![Job output on eicweb]({{ page.root }}/fig/eicweb_job_output.png)
