@@ -39,7 +39,7 @@ Let's see what kind of bechmarks are available:
 
 ```output
 # ls benchmarks
-b0_tracker  backgrounds  barrel_ecal  barrel_hcal  material_maps  others  pid  timing  tracking_detectors  zdc
+backgrounds  benchmarks.json  demp  diffractive_vm  dis  dvcs  dvmp  lambda  neutron  sigma  single  tcs  u_omega
 ```
 
 Now, create a new directory for your benchmark
@@ -86,7 +86,7 @@ your_benchmark:analyze:
     - echo "I will analyze events here!"
     - echo "This step requires that the reconstruct step be completed"
 
-your_benchmark:collect
+your_benchmark:results:
   extends: .phy_benchmark
   stage: collect
   needs:
@@ -98,7 +98,9 @@ your_benchmark:collect
 ~~~
 {: .language-yaml }
 
-The basic idea here is that we are defining the rules for each step of the [pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102530). A few things to note about the `config.yml`.
+The basic idea here is that we are defining the rules for each step of the [pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102530). 
+
+A few things to note about the `config.yml`:
 - The rules take basic bash script as input. Anything you would write in a bash script you can put in the script section of a rule in the `config.yml` file.
 - Each rule does not need to do something. In the example `config.yml` given here, each rule is just printing a statement.
 - Each rule corresponds to a stage in GitLab's pipelines. So the collect rule in your `config.yml` tells the pipeline what to do when it gets to the collect stage of the [pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/102530).
