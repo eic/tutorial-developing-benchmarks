@@ -2,7 +2,7 @@
 title: "Exercise 1: Setting up your first benchmark"
 teaching: 20
 exercises: 10
-questions:
+questions: How do we create a new pipeline with GitLab CI?
 objectives:
 - "Go through the process of contributing benchmarks on GitHub"
 - "Learn basics of running on eicweb GitLab CI"
@@ -209,6 +209,10 @@ There is another important feature that jobs can produce artifacts. They can be 
 ## Conclusion
 
 We've practiced contributing code that runs within eicweb Continuous Integration system.
+
+You can view these pipelines here: 
+- [physics benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
+- [detector benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
 
 {% include links.md %}
 
