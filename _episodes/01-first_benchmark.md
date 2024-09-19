@@ -188,13 +188,13 @@ Your newly created Pull Request will show up.
 
 ## Examine CI output on eicweb GitLab
 
-You can now scroll to the bottom of the page and see what checks are running. You may need to wait a bit and/or refresh the page to see a `eicweb/detector_benchmarks (epic_craterlake)` check running.
+You can now scroll to the bottom of the page and see what checks are running. You may need to wait a bit and/or refresh the page to see a `eicweb/physics_benchmarks (epic_craterlake)` check running.
 
 ![Check running on GitHub]({{ page.root }}/fig/github_running_check.png)
 
-Click "Details", it will take you to eicweb GitLab instance. The pipeline will show all the existing jobs. You should be able to see your new jobs in the "simulate" and "benchmarks" columns.
+Click "Details", it will take you to eicweb GitLab instance. The pipeline will show all the existing jobs. You should be able to see your new jobs. Each stage of the pipeline shown here corresponds to a rule in the `config.yml`:
 
-![Check running on eicweb]({{ page.root }}/fig/eicweb_pipeline_view.png)
+![Check running on eicweb]({{ page.root }}/fig/configToPipelines.png)
 
 You can click on individual jobs and see output they produce during running. Our newly created jobs should produce messages in the output. Real scripts could return errors and those would appear as CI failures.
 
