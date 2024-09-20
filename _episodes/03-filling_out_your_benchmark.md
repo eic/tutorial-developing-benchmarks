@@ -37,7 +37,10 @@ OUTPUT_FILE=${FILE_BASE}.detectorsim.root
 REC_FILE_BASE=${FILE_BASE}.detectorsim.edm4eic
 REC_FILE=${REC_FILE_BASE}.root
 ```
+The `export ENV_MODE=eicweb` lets our Snakefile know to use the paths for running on eicweb.
+
 Here we've defined a switch `USE_SIMULATION_CAMPAIGN` which will allow us to alternate between using output from the simulation campaign, and dynamically simulating new events.
+
 When not using the simulation campaign, the `N_EVENTS` variable defines how many events the benchmark should run.
 The rest of these variables define file names to be used in the benchmark.
 
@@ -125,6 +128,10 @@ root -l -b -q "benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C(\"$
 cat benchmark_output/*.json
 ```
 
+Your benchmark directory should now look like this: 
+![Add a title]({{ page.root }}/fig/your_bench_dir.png) 
+
+Once that's all setup, we can move on to actually adding these to our pipeline!
 
 ## The "simulate" rule
 We now fill out the `simulate` rule in GitLab's pipelines. Currently the instructions for this rule should be contained in `benchmarks/your_benchmark/config.yml` as: 
