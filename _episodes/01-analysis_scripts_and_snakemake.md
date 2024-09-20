@@ -98,7 +98,7 @@ rule your_benchmark_campaign_reco_get:
     input:
         lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{{{{INDEX}}}}_eicrecon.edm4eic.root",
     shell:
         """
 echo "Getting file for INDEX {wildcards.INDEX}"
