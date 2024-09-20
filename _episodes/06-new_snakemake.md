@@ -92,6 +92,45 @@ snakemake --cores 2 ../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plot
 
 You should see something like this: 
 ![Snakemake output second rule]({{ page.root }}/fig/snakemake_output_rule2.png)
+Check for the output file:
+```bash
+../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/
+```
+You should see `plots.root`.
+
+That's still not very impressive. Snakemake gets more useful when we want to run the analysis code over a lot of files. Let's add a rule to do this:
+
+```snakemake
+rule your_benchmark_combine:
+    input:
+        lambda wildcards: expand(
+           "../../sim_output/campaign_24.07.0_{INDEX:04d}_eicrecon.edm4eic/plots.root",
+           INDEX=range(int(wildcards.N)),
+        ),	
+    wildcard_constraints:
+        N="\d+",
+    output:
+        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
+    shell:
+        """
+hadd {output} {input}
+"""
+```
+
+On its face, this rule just adds root files using the `hadd` command. But by specifying the number of files you want to add, Snakemake will realize those files don't exist, and will go back to the `your_benchmark_campaign_reco_get` rule and the `your_benchmark_analysis` rule to create them.
+
+Let's test it out by requesting it combine 10 files:
+```bash
+snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots.root
+```
+It will spend some time downloading files and running the analysis code. Then it should hadd the files:
+![Snakemake output third rule]({{ page.root }}/fig/snakemake_output_rule3.png)
+
+Once it's done running, check that the file was produced:
+```
+ls ../../sim_output/campaign_24.07.0_combined_10files*
+```
+
 
 
 
