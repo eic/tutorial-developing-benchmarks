@@ -183,10 +183,10 @@ On its face, this rule just adds root files using the `hadd` command. But by spe
 
 Let's test it out by requesting it combine 10 files:
 ```bash
-snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots.root
+snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots.root
 ```
 It will spend some time downloading files and running the analysis code. Then it should hadd the files:
-![Snakemake output third rule]({{ page.root }}/fig/snakemake_output_rule3.png)
+![Snakemake output third rule]({{ page.root }}/fig/snakemake_output_rule3_new.png)
 
 Once it's done running, check that the file was produced:
 ```bash
