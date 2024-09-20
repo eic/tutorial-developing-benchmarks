@@ -18,7 +18,7 @@ Benchmarks are currently organized into two repositories:
 - [https://github.com/eic/detector_benchmarks](https://github.com/eic/detector_benchmarks)
 - [https://github.com/eic/physics_benchmarks](https://github.com/eic/physics_benchmarks)
 
-Let's make a physics benchmark. We start by cloning the git repository
+Let's make a physics benchmark. In the previous lesson, we were working in the `tutorial_directory/starting_script` direcotry. Let's go back one directory to `tutorial_directory/` and start by cloning the git repository:
 
 ```bash
 git clone https://github.com/eic/physics_benchmarks.git
@@ -194,7 +194,7 @@ You can now scroll to the bottom of the page and see what checks are running. Yo
 
 ![Check running on GitHub]({{ page.root }}/fig/github_running_check.png)
 
-Click "Details", it will take you to eicweb GitLab instance. The pipeline will show all the existing jobs. You should be able to see your new jobs. Each stage of the pipeline shown here corresponds to a rule in the `config.yml`:
+Click "Details", it will take you to eicweb GitLab instance. The pipeline will show all the existing jobs. Physics benchmark pipelines are viewable [here](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines) and detector benchmark pipleines are viewable [here](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines). You should be able to see your new jobs. Each stage of the pipeline shown here corresponds to a rule in the `config.yml`:
 
 ![Check running on eicweb]({{ page.root }}/fig/configToPipelines.png)
 
@@ -210,7 +210,7 @@ There is another important feature that jobs can produce artifacts. They can be 
 
 ## Conclusion
 
-We've practiced contributing code that runs within eicweb Continuous Integration system.
+We've practiced contributing code that runs within eicweb Continuous Integration system. Now that we have a good container for our benchmark, in the next lesson we'll start to fill out that shell to make the benchmark actually run an analysis.
 
 You can view these pipelines here: 
 - [physics benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
