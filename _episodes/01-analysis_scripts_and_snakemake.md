@@ -145,23 +145,18 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 
 This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from S3 as input data, and it runs the analysis script `uchannelrho.cxx`.
 
-In order to make this work:
-- Create a directory for the analysis script: `mkdir analysis`
-- In that directory, create an analysis code called `uchannelrho.cxx`
-- Copy the contents to put in the code from [here](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/uchannelrho.cxx).
-
-Now let's request the output file `"../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
+Now let's request the output file `"sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
 
 Let's try it out:
 ```bash
-snakemake --cores 2 ../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root
+snakemake --cores 2 sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root
 ```
 
 You should see something like this: 
-![Snakemake output second rule]({{ page.root }}/fig/snakemake_output_rule2.png)
+![Snakemake output second rule]({{ page.root }}/fig/snakemake_output_rule2_new.png)
 Check for the output file:
 ```bash
-../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/
+ls sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/
 ```
 You should see `plots.root`.
 
@@ -171,13 +166,13 @@ That's still not very impressive. Snakemake gets more useful when we want to run
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           "../../sim_output/campaign_24.07.0_{INDEX:04d}_eicrecon.edm4eic/plots.root",
+           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}_eicrecon.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
