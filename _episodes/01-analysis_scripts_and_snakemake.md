@@ -249,86 +249,10 @@ S3 = S3RemoteProvider(
     secret_access_key=os.environ["S3_SECRET_KEY"],
 )
 
-rule your_benchmark_campaign_reco_get:
-    input:
-        lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
-    output:
-        "../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
-    shell:
-        """
-echo "Getting file for INDEX {wildcards.INDEX}"
-ln {input} {output}
-"""
-
-rule your_benchmark_analysis:
-    input:
-        #uncomment below when running on eicweb CI
-        #script="benchmarks/your_benchmark/analysis/uchannelrho.cxx",
-        #uncomment below when running locally
-        script="analysis/uchannelrho.cxx",
-        data="../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
-    output:
-        plots="../../sim_output/campaign_24.07.0_{INDEX}_eicrecon.edm4eic/plots.root",
-    shell:
-        """
-mkdir -p $(dirname "{output.plots}")
-root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
-"""
-
-rule your_benchmark_combine:
-    input:
-        lambda wildcards: expand(
-           "../../sim_output/campaign_24.07.0_{INDEX:04d}_eicrecon.edm4eic/plots.root",
-           INDEX=range(int(wildcards.N)),
-        ),	
-    wildcard_constraints:
-        N="\d+",
-    output:
-        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
-    shell:
-        """
-hadd {output} {input}
-"""
-
-rule your_benchmark_plots:
-    input:
-        #uncomment below when running on eicweb CI
-        #script="benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C",
-        #uncomment below when running locally
-        script="macros/plot_rho_physics_benchmark.C",
-        plots="../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
-    output:
-        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
-    shell:
-        """
-if [ ! -d "{input.plots}_figures" ]; then
-    mkdir "{input.plots}_figures"
-    echo "{input.plots}_figures directory created successfully."
-else
-    echo "{input.plots}_figures directory already exists."
-fi
-root -l -b -q '{input.script}("{input.plots}")'
-"""
-```
-
-Or this:
-```python
-import os
-from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
-from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
-
-S3 = S3RemoteProvider(
-    endpoint_url="https://dtn01.sdcc.bnl.gov:9000",
-    access_key_id=os.environ["S3_ACCESS_KEY"],
-    secret_access_key=os.environ["S3_SECRET_KEY"],
-)
-
 # Set environment mode (local or eicweb)
 ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
-
 # Output directory based on environment
 OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
-
 # Benchmark directory based on environment
 BENCH_DIR = "benchmarks/your_benchmark/" if ENV_MODE == "eicweb" else "./"
 
@@ -336,7 +260,7 @@ rule your_benchmark_campaign_reco_get:
     input:
         lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{{INDEX}}_eicrecon.edm4eic.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
     shell:
         """
 echo "Getting file for INDEX {wildcards.INDEX}"
@@ -346,9 +270,9 @@ ln {input} {output}
 rule your_benchmark_analysis:
     input:
         script=f"{BENCH_DIR}analysis/uchannelrho.cxx",
-        data=f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{{INDEX}}_eicrecon.edm4eic.root",
+        data=f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
     output:
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_{{INDEX}}_eicrecon.edm4eic/plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic/plots.root",
     shell:
         """
 mkdir -p $(dirname "{output.plots}")
@@ -358,13 +282,13 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           f"{OUTPUT_DIR}campaign_24.07.0_{{INDEX:04d}}_eicrecon.edm4eic/plots.root",
+           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}_eicrecon.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{{N}}files_eicrecon.edm4eic.plots.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
@@ -373,9 +297,9 @@ hadd {output} {input}
 rule your_benchmark_plots:
     input:
         script=f"{BENCH_DIR}macros/plot_rho_physics_benchmark.C",
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{{N}}files_eicrecon.edm4eic.plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{{N}}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
     shell:
         """
 if [ ! -d "{input.plots}_figures" ]; then
