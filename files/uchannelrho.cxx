@@ -140,32 +140,23 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 				continue;
 			}
 	
-			//association of rec level scat' e
-			int rec_elect_index=-1;
-			for(unsigned int i=0;i<sim_id.GetSize();i++){
-				if(sim_id[i]==mc_elect_index){
-					//find the rec_id
-					rec_elect_index = rec_id[i];
-				}
+
+		  if(reco_charge_array[itrk]>0){ 
+				numpositivetracks++; 
+			  if ((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==1){
+			    piplusREC.SetVectM(trk,MASS_PION); 
+			    isPiPlusFound=true;
+			  }
+		     if(sim_id[itrk - failed]==6){
+		     	protonRECasifpion.SetVectM(trk,MASS_PION);
+		     	isProtonFound=true; 
+		     }
 			}
-		
-			if(itrk!=rec_elect_index) {
-		  	if(reco_charge_array[itrk]>0){ 
-					numpositivetracks++; 
-				  if ((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==1){
-				    piplusREC.SetVectM(trk,MASS_PION); 
-				    isPiPlusFound=true;
-				  }
-		      if(sim_id[itrk - failed]==6){
-		      	protonRECasifpion.SetVectM(trk,MASS_PION);
-		      	isProtonFound=true; 
-		      }
-				}
-		  	if(reco_charge_array[itrk]<0){ 
-		  		piminusREC.SetVectM(trk,MASS_PION); 
-		  		if((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==-1)	isPiMinusFound=true;
-		  	}
-			}
+		  if(reco_charge_array[itrk]<0){ 
+		  	piminusREC.SetVectM(trk,MASS_PION); 
+		  	if((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==-1)	isPiMinusFound=true;
+		  }
+			
 		}
 		
 		//4vector of VM;
