@@ -14,6 +14,31 @@ In this exercise we start with a ready-made analysis script that we're running l
 
 Snakemake comes with a great [documentation](https://snakemake.readthedocs.io), you are encouraged to read it. For now, let's cover its suggested use for needs of defining ePIC benchmarks.
 
+## Starting from an Analysis Script
+
+We're going to go all the way from an analysis script to a fully-integragrated benchmark with GitLab's continuous integration (CI).
+
+First launch eic-shell 
+```bash
+./eic-shell
+```
+then create a working directory
+```bash
+mkdir tutorial_directory
+mkdir tutorial_directory/starting_script
+cd tutorial_directory/starting_script
+```
+
+Copy the following files to this working directory:
+- this analysis script: [`uchannelrho.cxx`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/uchannelrho.cxx)
+- this plotting macro: [`plot_rho_physics_benchmark.C`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/prefinal/plot_rho_physics_benchmark.C)
+- this style header: [`RiceStyle.h`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/RiceStyle.h)
+
+We will also start by running over a file from the simulation campaign. Download it to your workspace:
+```bash
+xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root ./
+```
+
 ## Getting started with Snakemake
 In order to demonstrate the advantages of using snakefiles, let's start using them for our analysis.
 First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `benchmarks/your_benchmark/` directory make a new file called `Snakefile`.
