@@ -41,6 +41,24 @@ ln {input} {output}
 """
 ```
 
+We are giving the Snakefile the S3 access key so it can download the files we request. 
+
+We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from S3 to the location `sim_output`.
+
+After saving the edited file, let's try running it. 
+
+The important thing to remember about Snakemake is that Snakemake commands behave like requests. So if I want Snakemake to produce a file called `output.root`, I would type `snakemake --cores 2 output.root`. If there is a rule for producing `output.root`, then Snakemake will find that rule and execute it. We've defined a rule to produce a file called `../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root`, but really we can see from the construction of our rule that the `{INDEX}` is a wildcard, so we should put a number there instead. Checking out the [files on S3](https://dtn01.sdcc.bnl.gov:9001/buckets/eictest/browse/RVBJQy9SRUNPLzI0LjA3LjAvZXBpY19jcmF0ZXJsYWtlL0VYQ0xVU0lWRS9VQ0hBTk5FTF9SSE8vMTB4MTAwLw==), we see files with indices from `0000` up to `0048`. Let's request the Snakemake download the file `campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root`:
+```bash
+snakemake --cores 2 ../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root
+```
+
+Snakemake now looks for the rule it needs to produce that file. It finds the rule we wrote, and it downloads the file. Check for the file:
+```bash
+ls ../../sim_output/
+    campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root
+```
+
+
 ## Conclusion
 
 In this exercise we've built an analysis workflow using Snakemake. That required us to think about the flow of the data and come up with a file naming scheme to reflect it. This approach can be scaled between local testing with handful of files and largely parallel analyses on full datasets.
