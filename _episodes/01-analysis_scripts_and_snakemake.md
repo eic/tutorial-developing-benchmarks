@@ -82,11 +82,17 @@ S3 = S3RemoteProvider(
     secret_access_key=os.environ["S3_SECRET_KEY"],
 )
 
+# Set environment mode (local or eicweb)
+ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
+
+# Output directory based on environment
+OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
+
 rule your_benchmark_campaign_reco_get:
     input:
         lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        "../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{{INDEX}}_eicrecon.edm4eic.root",
     shell:
         """
 echo "Getting file for INDEX {wildcards.INDEX}"
@@ -95,6 +101,8 @@ ln {input} {output}
 ```
 
 We are giving the Snakefile the S3 access key so it can download the files we request. 
+
+Thinking ahead to when we want to put our benchmark on eicweb, we also add this `ENV_MODE` variable which allows us to specify paths differently based on whether we're running locally or in GitLab's pipelines.
 
 We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from S3 to the location `sim_output`.
 
