@@ -1,16 +1,16 @@
 ---
-title: "Exercise 6: New workflow management with Snakemake"
+title: "Exercise 1: Analysis Scripts and Snakemake"
 teaching: 10
 exercises: 10
 questions:
-- "How does one share data analysis workflows?"
+- "How does one set up data analysis workflows?"
 objectives:
 - "Learn basics of creating Snakemake workflows"
 keypoints:
 - "Snakemake allows one to run their data analyses and share them with others"
 ---
 
-In the previous exercise we've exercised GitLab CI, which is not intended for a large-scale data analysis. Workflows running on GitLab CI are harder to test locally or at a computing farm. In this exercise we will practice using [Snakemake](https://snakemake.github.io/) workflow management system to define data analysis pipelines.
+In this exercise we start with a ready-made analysis script that we're running locally. We'll practice using [Snakemake](https://snakemake.github.io/) workflow management system to define data analysis pipelines.
 
 Snakemake comes with a great [documentation](https://snakemake.readthedocs.io), you are encouraged to read it. For now, let's cover its suggested use for needs of defining ePIC benchmarks.
 
