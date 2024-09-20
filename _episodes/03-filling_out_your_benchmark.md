@@ -366,3 +366,7 @@ git commit -m "I'm beefing up my benchmark!"
 git push origin pr/your_benchmark_<mylastname>
 ```
 
+Now monitor the pipeline you created:
+- [physics benchmark pipelines](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
+- [detector benchmark pipleines](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
+
