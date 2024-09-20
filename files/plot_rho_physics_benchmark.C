@@ -1,4 +1,6 @@
 #include "RiceStyle.h"
+#include "common_bench/benchmark.h"
+
 using namespace std;
 
 int setbenchstatus(double eff){
@@ -76,14 +78,6 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   r44_2->SetTextSize(30);
   r44_2->SetTextFont(43);
   r44_2->SetTextColor(kBlack);
-
-  TLegend *w7 = new TLegend(0.58,0.68,0.93,0.76);
-  w7->SetLineColor(kWhite);
-  w7->SetFillColor(0);
-  w7->SetTextSize(17);
-  w7->SetTextFont(45);
-  w7->AddEntry(h_t_MC, "eSTARlight "+vm_label+" MC ", "L");
-  w7->AddEntry(h_t_REC, "eSTARlight "+vm_label+" RECO ", "P");
 
   TCanvas* c2 = new TCanvas("c2","c2",1,1,600,600);
   gPad->SetTicks();
