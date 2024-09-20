@@ -102,7 +102,7 @@ if [ -f jana.dot ] ; then cp jana.dot ${REC_FILE_BASE}.dot ; fi
 rootls -t ${REC_FILE}
 ```
 
-Finally create a file called [`benchmarks/your_benchmark/analyze.sh`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/analyze.sh) which will run the analysis and plotting scripts:
+Create a file called [`benchmarks/your_benchmark/analyze.sh`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/analyze.sh) which will run the analysis and plotting scripts:
 ```bash
 #!/bin/bash
 source strict-mode.sh
@@ -128,8 +128,20 @@ root -l -b -q "benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C(\"$
 cat benchmark_output/*.json
 ```
 
+Finally let's copy over our analysis script, our plotting macro & header, and our Snakefile:
+```bash
+mkdir benchmarks/your_benchmark/analysis
+mkdir benchmarks/your_benchmark/macros
+
+cp ../starting_script/Snakefile benchmarks/your_benchmark/
+cp ../starting_script/analysis/uchannelrho.cxx benchmarks/your_benchmark/analysis/
+cp ../starting_script/macros/RiceStyle.h benchmarks/your_benchmark/macros/
+cp ../starting_script/macros/plot_rho_physics_benchmark.C benchmarks/your_benchmark/macros/
+```
+
+
 Your benchmark directory should now look like this: 
-![Add a title]({{ page.root }}/fig/your_bench_dir.png) 
+![Add a title]({{ page.root }}/fig/your_bench_dir_new.png) 
 
 Once that's all setup, we can move on to actually adding these to our pipeline!
 
