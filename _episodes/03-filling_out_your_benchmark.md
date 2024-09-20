@@ -219,7 +219,7 @@ your_benchmark:reconstruct:
     - echo "Event reconstruction here!"
 ```
 
-We need the `simulate` rule to finish before starting the reconstruction so add the line `needs: ["your_benchmark:simulate"]` below `extends: .phy_benchmark`.
+We need the `simulate` rule to finish before starting the reconstruction so add the line `needs: ["your_benchmark:simulate"]` below `stage: reconstruct`.
 
 In a new line below that, add a timeout: `timeout: 10 hour`.
 
@@ -251,8 +251,8 @@ Finally add an instruction to retry if this fails:
 The `reconstruct` rule should now look like this:
 ```yaml
 your_benchmark:reconstruct:
-  stage: reconstruct
   extends: .phy_benchmark
+  stage: reconstruct
   needs: ["your_benchmark:simulate"]
   timeout: 10 hour
   script:
@@ -309,6 +309,7 @@ If not using the simulation campaign, we can just run the `analyze.sh` script an
     -     bash benchmarks/your_benchmark/analyze.sh
     -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
     - fi
+    - echo "Finished copying!"
 ```
 
 The `analyze` rule should now look like this:
