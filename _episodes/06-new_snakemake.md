@@ -91,7 +91,7 @@ snakemake --cores 2 ../../sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plot
 ```
 
 You should see something like this: 
-![Snakemake output second rule]({{ page.root }}/fig/snakemake_output2.png)
+![Snakemake output second rule]({{ page.root }}/fig/snakemake_output_rule2.png)
 
 
 
