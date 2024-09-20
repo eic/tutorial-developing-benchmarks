@@ -65,6 +65,9 @@ But the benefits from using Snakemake become more apparent as the number of task
 ```snakemake
 rule your_benchmark_analysis:
     input:
+        #uncomment below when running on eicweb CI
+        #script="benchmarks/your_benchmark/analysis/uchannelrho.cxx",
+        #uncomment below when running locally
         script="analysis/uchannelrho.cxx",
         data="../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
     output:
@@ -127,10 +130,63 @@ It will spend some time downloading files and running the analysis code. Then it
 ![Snakemake output third rule]({{ page.root }}/fig/snakemake_output_rule3.png)
 
 Once it's done running, check that the file was produced:
-```
+```bash
 ls ../../sim_output/campaign_24.07.0_combined_10files*
 ```
 
+Now let's add one more rule to create benchmark plots:
+```snakemake
+rule your_benchmark_plots:
+    input:
+        #uncomment below when running on eicweb CI
+        #script="benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C",
+        #uncomment below when running locally
+        script="macros/plot_rho_physics_benchmark.C",
+        plots="../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
+    output:
+        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+    shell:
+        """
+if [ ! -d "{input.plots}_figures" ]; then
+    mkdir "{input.plots}_figures"
+    echo "{input.plots}_figures directory created successfully."
+else
+    echo "{input.plots}_figures directory already exists."
+fi
+root -l -b -q '{input.script}("{input.plots}")'
+cat benchmark_output/*.json
+"""
+```
+
+In order to run this, also make a `macros` directory and put the plotting macro in it:
+- `mkdir macros`
+- `touch macros/plot_rho_physics_benchmark.C`
+- Copy [this plotting code](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/plot_rho_physics_benchmark_prefinal.C) into `plot_rho_physics_benchmark.C`
+- Also create this file: `touch macros/RiceStyle.h`
+- Copy [these contents](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/RiceStyle.h) into `RiceStyle.h`.
+
+Now run the new rule by requesting a benchmark figure made from 10 simulation campaign files:
+```bash
+snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+```
+
+Now check that the three benchmark figures were created: 
+```
+ls ../../sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/*.pdf
+```
+You should see three pdfs. 
+We did it!
+
+Now that our Snakefile is totally set up, the big advantage of Snakemake is how it manages your workflow. 
+If you edit the plotting macro and then rerun:
+```bash
+snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+```
+Snakemake will recognize that simulation campaign files have already been downloaded, that the analysis scripts have already run, and the files have already been combined. It will only run the last step, the plotting macro, if that's the only thing that needs to be re-run.
+
+If the analysis script changes, Snakemake will only re-run the analysis script and everything after.
+
+If we want to scale up the plots to include 15 simulation campaign files instead of just 10, then for those 5 extra files only Snakemake will rerun all the steps, and combine with the existing 10 files.
 
 
 
