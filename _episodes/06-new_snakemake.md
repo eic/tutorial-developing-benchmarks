@@ -189,6 +189,81 @@ If the analysis script changes, Snakemake will only re-run the analysis script a
 If we want to scale up the plots to include 15 simulation campaign files instead of just 10, then for those 5 extra files only Snakemake will rerun all the steps, and combine with the existing 10 files.
 
 
+The final Snakefile should look like this:
+```snakemake
+import os
+from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+
+S3 = S3RemoteProvider(
+    endpoint_url="https://dtn01.sdcc.bnl.gov:9000",
+    access_key_id=os.environ["S3_ACCESS_KEY"],
+    secret_access_key=os.environ["S3_SECRET_KEY"],
+)
+
+rule your_benchmark_campaign_reco_get:
+    input:
+        lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
+    output:
+        "../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
+    shell:
+        """
+echo "Getting file for INDEX {wildcards.INDEX}"
+ln {input} {output}
+"""
+
+rule your_benchmark_analysis:
+    input:
+        #uncomment below when running on eicweb CI
+        #script="benchmarks/your_benchmark/analysis/uchannelrho.cxx",
+        #uncomment below when running locally
+        script="analysis/uchannelrho.cxx",
+        data="../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
+    output:
+        plots="../../sim_output/campaign_24.07.0_{INDEX}_eicrecon.edm4eic/plots.root",
+    shell:
+        """
+mkdir -p $(dirname "{output.plots}")
+root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
+"""
+
+rule your_benchmark_combine:
+    input:
+        lambda wildcards: expand(
+           "../../sim_output/campaign_24.07.0_{INDEX:04d}_eicrecon.edm4eic/plots.root",
+           INDEX=range(int(wildcards.N)),
+        ),	
+    wildcard_constraints:
+        N="\d+",
+    output:
+        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
+    shell:
+        """
+hadd {output} {input}
+"""
+
+rule your_benchmark_plots:
+    input:
+        #uncomment below when running on eicweb CI
+        #script="benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C",
+        #uncomment below when running locally
+        script="macros/plot_rho_physics_benchmark.C",
+        plots="../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots.root",
+    output:
+        "../../sim_output/campaign_24.07.0_combined_{N}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+    shell:
+        """
+if [ ! -d "{input.plots}_figures" ]; then
+    mkdir "{input.plots}_figures"
+    echo "{input.plots}_figures directory created successfully."
+else
+    echo "{input.plots}_figures directory already exists."
+fi
+root -l -b -q '{input.script}("{input.plots}")'
+"""
+```
+
+
 
 ## Conclusion
 
