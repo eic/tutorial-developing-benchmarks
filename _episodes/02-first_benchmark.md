@@ -1,5 +1,5 @@
 ---
-title: "Exercise 1: Setting up your first benchmark"
+title: "Exercise 2: Setting up your first benchmark with pipelines"
 teaching: 20
 exercises: 10
 questions: How do we create a new pipeline with GitLab CI?
