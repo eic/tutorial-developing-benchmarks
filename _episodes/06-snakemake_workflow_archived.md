@@ -1,5 +1,5 @@
 ---
-title: "Exercise 2: Workflow management with Snakemake"
+title: "Archived Exercise 2: Workflow management with Snakemake"
 teaching: 10
 exercises: 10
 questions:
