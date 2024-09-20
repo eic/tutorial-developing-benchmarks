@@ -39,6 +39,24 @@ We will also start by running over a file from the simulation campaign. Download
 xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root ./
 ```
 
+Run the analysis script over the simulation campaign output:
+```bash
+root -l -b -q 'uchannelrho.cxx+("rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root","output.root")'
+```
+Now make a directory to contain the benchmark figures, and run the plotting macro:
+```bash
+mkdir output_figures/
+root -l -b -q 'plot_rho_physics_benchmark.C("output.root")'
+```
+
+You should see some errors like
+```error
+Error in <TTF::SetTextSize>: error in FT_Set_Char_Size
+```
+but the figures should be produced just fine.
+
+
+
 ## Getting started with Snakemake
 In order to demonstrate the advantages of using snakefiles, let's start using them for our analysis.
 First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `benchmarks/your_benchmark/` directory make a new file called `Snakefile`.
