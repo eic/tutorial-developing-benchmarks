@@ -11,6 +11,8 @@ keypoints:
 
 ## Setting up a repository
 
+Let's now put our analysis workflow on GitLab's Continuous Integration (CI) system!
+
 Benchmarks are currently organized into two repositories:
 
 - [https://github.com/eic/detector_benchmarks](https://github.com/eic/detector_benchmarks)
