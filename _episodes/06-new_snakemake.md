@@ -154,7 +154,6 @@ else
     echo "{input.plots}_figures directory already exists."
 fi
 root -l -b -q '{input.script}("{input.plots}")'
-cat benchmark_output/*.json
 """
 ```
 
