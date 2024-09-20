@@ -39,21 +39,31 @@ We will also start by running over a file from the simulation campaign. Download
 xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root ./
 ```
 
+Organize files into `analysis` and `macros` directories:
+```bash
+mkdir analysis
+mv uchannelrho.cxx analysis/
+mkdir macros
+mv plot_rho_physics_benchmark.C macros/
+mv RiceStyle.h macros/
+```
+
 Run the analysis script over the simulation campaign output:
 ```bash
-root -l -b -q 'uchannelrho.cxx+("rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root","output.root")'
+root -l -b -q 'analysis/uchannelrho.cxx+("rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root","output.root")'
 ```
 Now make a directory to contain the benchmark figures, and run the plotting macro:
 ```bash
 mkdir output_figures/
-root -l -b -q 'plot_rho_physics_benchmark.C("output.root")'
+root -l -b -q 'macros/plot_rho_physics_benchmark.C("output.root")'
 ```
 
 You should see some errors like
-```error
+~~~
 Error in <TTF::SetTextSize>: error in FT_Set_Char_Size
-```
-but the figures should be produced just fine.
+~~~
+{: .error}
+but the figures should be produced just fine. If everything's run correctly, then we have a working analysis. 
 
 
 
