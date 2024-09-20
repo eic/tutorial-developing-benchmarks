@@ -63,15 +63,20 @@ You should see some errors like
 Error in <TTF::SetTextSize>: error in FT_Set_Char_Size
 ~~~
 {: .error}
-but the figures should be produced just fine. If everything's run correctly, then we have a working analysis. 
+but the figures should be produced just fine. If everything's run correctly, then we have a working analysis! 
 
+
+With this analysis as a starting point, we'll next explore using Snakemake to define an analysis workflow.
 
 
 ## Getting started with Snakemake
+
+We'll now use a tool called Snakemake to define an analysis workflow that will come in handy when building analysis pipelines.
+
 In order to demonstrate the advantages of using snakefiles, let's start using them for our analysis.
 First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `benchmarks/your_benchmark/` directory make a new file called `Snakefile`.
 Open the file and add these lines:
-```snakemake
+```python
 import os
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
@@ -84,7 +89,6 @@ S3 = S3RemoteProvider(
 
 # Set environment mode (local or eicweb)
 ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
-
 # Output directory based on environment
 OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
 
@@ -123,7 +127,7 @@ Okay whatever... so we download a file. It doesn't look like Snakemake really ad
 
 But the benefits from using Snakemake become more apparent as the number of tasks we want to do grows! Let's now add a new rule below the last one:
 
-```snakemake
+```python
 rule your_benchmark_analysis:
     input:
         #uncomment below when running on eicweb CI
@@ -164,7 +168,7 @@ You should see `plots.root`.
 
 That's still not very impressive. Snakemake gets more useful when we want to run the analysis code over a lot of files. Let's add a rule to do this:
 
-```snakemake
+```python
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
@@ -196,7 +200,7 @@ ls ../../sim_output/campaign_24.07.0_combined_10files*
 ```
 
 Now let's add one more rule to create benchmark plots:
-```snakemake
+```python
 rule your_benchmark_plots:
     input:
         #uncomment below when running on eicweb CI
@@ -250,7 +254,7 @@ If we want to scale up the plots to include 15 simulation campaign files instead
 
 
 The final Snakefile should look like this:
-```snakemake
+```python
 import os
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
