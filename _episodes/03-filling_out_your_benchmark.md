@@ -155,8 +155,10 @@ your_benchmark:simulate:
     - echo "I will simulate detector response here!"
 ```
 
+In order to make sure the previous stages finish before this one starts, add a new line below `stage:simulate`: `needs: ["common:detector", "your_benchmark:generate"]`.
+
 This step can take a long time if you simulate too many events. So let's add an upper limit on the allowed run time of 10 hours:
-In a new line below `stage: simulate`, add this: `timeout: 10 hour`.
+In a new line below `needs: ["common:detector", "your_benchmark:generate"]`, add this: `timeout: 10 hour`.
 
 Now in the `script` section of the rule, add two new lines to source the `setup.config` file:
 ```yaml
@@ -185,8 +187,8 @@ Finally, add an instruction to retry the simulation if it fails:
 The final `simulate` rule should look like this:
 ```yaml
 your_benchmark:simulate:
-  stage: simulate
   extends: .phy_benchmark
+  stage: simulate
   needs: ["common:detector", "your_benchmark:generate"]
   timeout: 10 hour
   script:
