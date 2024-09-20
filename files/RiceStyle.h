@@ -35,8 +35,6 @@
 #include "TMatrixD.h"
 #include "TArrow.h"
 
-#include "common_bench/benchmark.h"
-
 void RiceStyle(){
 
 std::cout << "Welcome to Rice Heavy Ion group!! " << std::endl;
