@@ -140,6 +140,7 @@ cp ../starting_script/macros/plot_rho_physics_benchmark.C benchmarks/your_benchm
 ```
 
 
+
 Your benchmark directory should now look like this: 
 ![Add a title]({{ page.root }}/fig/your_bench_dir_new.png) 
 
@@ -336,3 +337,32 @@ your_benchmark:analyze:
     - fi
     - echo "Finished copying!" 
 ```
+
+## Testing Real Pipelines
+
+We've set up our benchmark to do some real analysis! As a first test, let's make sure we're still running only over the simulation campaign. The `USE_SIMULATION_CAMPAIGN` in `setup.config` should be set to true.
+
+Now let's add our changes and push them to GitHub!
+
+```bash
+git status
+```
+This command should show something like this:
+![Add a title]({{ page.root }}/fig/gitstatus_example.png) 
+
+Now add all our changes:
+```bash
+git add benchmarks/your_benchmark/config.yml
+git add benchmarks/your_benchmark/Snakefile
+git add benchmarks/your_benchmark/analysis/uchannelrho.cxx 
+git add benchmarks/your_benchmark/analyze.sh
+git add benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C 
+git add benchmarks/your_benchmark/macros/RiceStyle.h 
+git add benchmarks/your_benchmark/reconstruct.sh
+git add benchmarks/your_benchmark/setup.config
+git add benchmarks/your_benchmark/simulate.sh
+
+git commit -m "I'm beefing up my benchmark!"
+git push origin pr/your_benchmark_<mylastname>
+```
+
