@@ -41,7 +41,7 @@ Let's see what kind of bechmarks are available:
 
 ```output
 # ls benchmarks
-backgrounds  benchmarks.json  demp  diffractive_vm  dis  dvcs  dvmp  lambda  neutron  sigma  single  tcs  u_omega
+backgrounds  benchmarks.json  demp  diffractive_vm  dis  dvcs  dvmp  tcs  u_omega
 ```
 
 Now, create a new directory for your benchmark
@@ -123,7 +123,6 @@ include:
   - local: 'benchmarks/dvcs/config.yml'
   - local: 'benchmarks/tcs/config.yml'
   - local: 'benchmarks/u_omega/config.yml'
-  - local: 'benchmarks/single/config.yml'
   - local: 'benchmarks/backgrounds/config.yml'
 ```
 
@@ -132,11 +131,10 @@ Insert an appropriate line for your newly created `benchmarks/your_benchmark/con
 include:
   #- local: 'benchmarks/diffractive_vm/config.yml'
   - local: 'benchmarks/dis/config.yml'
-    #- local: 'benchmarks/dvmp/config.yml'
+  #- local: 'benchmarks/dvmp/config.yml'
   #- local: 'benchmarks/dvcs/config.yml'
   #- local: 'benchmarks/tcs/config.yml'
   #- local: 'benchmarks/u_omega/config.yml'
-  - local: 'benchmarks/single/config.yml'
   #- local: 'benchmarks/backgrounds/config.yml'
   - local: 'benchmarks/your_benchmark/config.yml'
 ```
@@ -151,7 +149,6 @@ summary:
     #- "dvcs:results"
     #- "tcs:results"
     #- "u_omega:results"
-    - "single:results"
     #- "backgrounds:results"
     - "your_benchmark:results"
 ```
