@@ -128,7 +128,7 @@ root -l -b -q "benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C(\"$
 cat benchmark_output/*.json
 ```
 
-Finally let's copy over our analysis script, our plotting macro & header, and our Snakefile:
+Let's copy over our analysis script, our plotting macro & header, and our Snakefile:
 ```bash
 mkdir benchmarks/your_benchmark/analysis
 mkdir benchmarks/your_benchmark/macros
@@ -143,6 +143,19 @@ cp ../starting_script/macros/plot_rho_physics_benchmark.C benchmarks/your_benchm
 
 Your benchmark directory should now look like this: 
 ![Add a title]({{ page.root }}/fig/your_bench_dir_new.png) 
+
+In order to use your Snakefile, let GitLab know it's there. Open the main `Snakefile`, NOT this one `benchmarks/your_benchmark/Snakefile`, but the one at the same level as the `benchmarks` directory.
+
+Go to the very end of the file and include a path to your own Snakefile:
+```python
+include: "benchmarks/diffractive_vm/Snakefile"
+include: "benchmarks/dis/Snakefile"
+include: "benchmarks/lambda/Snakefile"
+include: "benchmarks/neutron/Snakefile"
+include: "benchmarks/demp/Snakefile"
+include: "benchmarks/sigma/Snakefile"
+include: "benchmarks/your_benchmark/Snakefile"
+```
 
 Once that's all setup, we can move on to actually adding these to our pipeline!
 
@@ -352,6 +365,7 @@ This command should show something like this:
 
 Now add all our changes:
 ```bash
+git add Snakefile
 git add benchmarks/your_benchmark/config.yml
 git add benchmarks/your_benchmark/Snakefile
 git add benchmarks/your_benchmark/analysis/uchannelrho.cxx 
