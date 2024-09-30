@@ -3,7 +3,8 @@ title: Setup
 ---
 
 Tutorial participants will need 
-- a working eic-shell installation
+- a working [eic-shell installation](https://eic.github.io/tutorial-setting-up-environment/02-eic-shell/index.html)
+- if you'll be following along on a remote cluster through ssh, you may also need to [set up ssh-keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent). This will allow you to perform GitHub operations while using ssh.
 
 This tutorial shows analyzers how to turn their analysis script into a benchmark. To do this, we will start with a ready-made bare-bones analysis. This is modeled after the u-channel rho benchmark, but is stripped down to just a few crucial parts.
 
