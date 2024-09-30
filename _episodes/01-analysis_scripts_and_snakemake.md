@@ -74,7 +74,7 @@ With this analysis as a starting point, we'll next explore using Snakemake to de
 We'll now use a tool called Snakemake to define an analysis workflow that will come in handy when building analysis pipelines.
 
 In order to demonstrate the advantages of using snakefiles, let's start using them for our analysis.
-First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `benchmarks/your_benchmark/` directory make a new file called `Snakefile`.
+First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `tutorial_directory/starting_script/` directory make a new file called `Snakefile`.
 Open the file and add these lines:
 ```python
 import os
