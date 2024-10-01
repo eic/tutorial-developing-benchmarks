@@ -150,10 +150,7 @@ Go to the very end of the file and include a path to your own Snakefile:
 ```python
 include: "benchmarks/diffractive_vm/Snakefile"
 include: "benchmarks/dis/Snakefile"
-include: "benchmarks/lambda/Snakefile"
-include: "benchmarks/neutron/Snakefile"
 include: "benchmarks/demp/Snakefile"
-include: "benchmarks/sigma/Snakefile"
 include: "benchmarks/your_benchmark/Snakefile"
 ```
 
