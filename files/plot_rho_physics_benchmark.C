@@ -173,8 +173,8 @@ void plot_rho_physics_benchmark(TString filename="./sim_output/plot_combined.roo
   h_VM_mass_MC_etacut->Draw("HIST E same");
   h_VM_mass_REC_etacut->Draw("HIST E same");
 
-  double minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
-  double maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
+  int minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
+  int maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
   double thiseff = 100.0*(1.0*h_VM_mass_REC_etacut->Integral(minbineff,maxbineff))/(1.0*h_VM_mass_MC_etacut->Integral(minbineff,maxbineff));
 
   r42->Draw("same");
