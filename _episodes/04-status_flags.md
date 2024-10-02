@@ -104,6 +104,20 @@ The status flags from your benchmark should all collected and summarized in this
      - echo "Finished collecting!"
 ```
 
+Now push to GitHub!
+```bash
+git add benchmarks/your_benchmark/config.yml
+git add benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C
+git add benchmarks/your_benchmark/benchmark.json
+
+git commit -m "added a status flag!"
+git push origin pr/your_benchmark_<mylastname>
+```
+
+Check the pipelines: 
+- [physics benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
+- [detector benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
+
 
 
 
