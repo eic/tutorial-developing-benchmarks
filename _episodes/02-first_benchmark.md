@@ -50,7 +50,7 @@ Now, create a new directory for your benchmark
 mkdir benchmarks/your_benchmark
 ```
 
-The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml`. For a detector benchmark, start with [this `config.yml`](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/config.yml).
+The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml`.
 
 For a physics benchmark and to follow along with this tutorial, create a `config.yml` with the following contents:
 ~~~
@@ -60,42 +60,17 @@ your_benchmark:compile:
   script:
     - echo "You can compile your code here!"
 
-your_benchmark:generate:
-  extends: .phy_benchmark 
-  stage: generate
-  script:
-    - echo "I will generate events here!"
-    - echo "Add event-generator code to do this"
-
 your_benchmark:simulate:
   extends: .phy_benchmark
   stage: simulate
   script:
     - echo "I will simulate detector response here!"
 
-your_benchmark:reconstruct:
-  extends: .phy_benchmark
-  stage: reconstruct
-  script:
-    - echo "Event reconstruction here!"
-
-your_benchmark:analyze:
-  extends: .phy_benchmark
-  stage: analyze
-  needs:
-    - ["your_benchmark:reconstruct"]
-  script:
-    - echo "I will analyze events here!"
-    - echo "This step requires that the reconstruct step be completed"
-
 your_benchmark:results:
   extends: .phy_benchmark
   stage: collect
-  needs:
-    - ["your_benchmark:analyze"]
   script:
     - echo "I will collect results here!"
-    - echo "This step requires that the analyze step be completed"
 
 ~~~
 {: .language-yaml }
