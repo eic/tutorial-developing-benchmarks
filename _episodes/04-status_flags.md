@@ -65,7 +65,7 @@ int setbenchstatus(double eff){
 }
 ```
 
-We also have to include the appropriate header. At the top of  `plot_benchmark.C`, please also add:
+We also have to include the appropriate header. At the top of `plot_benchmark.C`, please also add:
 ```c++
 #include "common_bench/benchmark.h"
 ```
@@ -91,23 +91,20 @@ In your benchmark directory, create a file titled `benchmark.json`, or copy [thi
 }
 ```
 
-The status flags from your benchmark are all collected and summarized in the `collect` stage of the pipeline. To do this, make sure the `config.yml` at `physics_benchmarks/benchmarks/your_benchmark/config.yml` includes the following rule:
+To keep the status flags as artifacts, also add these lines to the end of the `results` rule in your `config.yml`
 ```yml
-your_benchmark:results:
-  stage: collect
-  needs: ["your_benchmark:analyze"]
-  script:
+    - echo "Finished, copying over json now"
+    - cp benchmark_output/u_rho_eff.json results/your_benchmark/
+    - echo "Finished copying!" 
+```
+
+The status flags from your benchmark should all collected and summarized in this stage of the pipeline too. To do this, include the following lines at the end of the stage:
+```yml
      - collect_tests.py your_benchmark
      - echo "Finished collecting!"
 ```
 
-To keep the status flags as artifacts, also add these lines to the end of the `analyze` rule in your `config.yml`
-```yml
-    - echo "Finished, copying over json now"
-    - cp benchmark_output/your_benchmark_flag.json results/your_benchmark/
-    - echo "Finished copying!" 
-    - snakemake --cores 1 yourbench_compile_manual
-```
+
 
 
 
