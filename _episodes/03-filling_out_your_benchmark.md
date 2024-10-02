@@ -264,6 +264,61 @@ If not using the simulation campaign, we can just run the `analyze.sh` script an
     - echo "Finished copying!"
 ```
 
+Your final `config.yml` should look like:
+```yaml
+your_benchmark:compile:
+  extends: .phy_benchmark 
+  stage: compile
+  script:
+    - echo "You can compile your code here!"
+
+your_benchmark:simulate:
+  extends: .phy_benchmark
+  stage: simulate
+  needs: ["common:setup"]
+  timeout: 10 hour
+  script:
+    - echo "Simulating everything here!"
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign!"
+    - else
+    -     echo "Grabbing raw events from S3 and running Geant4"
+    -     bash benchmarks/your_benchmark/simulate.sh
+    -     echo "Geant4 simulations done! Starting eicrecon now!"
+    -     bash benchmarks/your_benchmark/reconstruct.sh
+    - fi
+    - echo "Finished simulating detector response"
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+
+your_benchmark:results:
+  extends: .phy_benchmark
+  stage: collect
+  script:
+    - echo "I will collect results here!"
+  needs:
+    - ["your_benchmark:simulate"]
+  script:
+    - mkdir -p results/your_benchmark
+    - mkdir -p benchmark_output
+    - config_file=benchmarks/your_benchmark/setup.config
+    - source $config_file
+    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
+    -     echo "Using simulation campaign!"
+    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
+    - else
+    -     echo "Not using simulation campaign!"
+    -     bash benchmarks/your_benchmark/analyze.sh
+    -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
+    - fi
+    - echo "Finished copying!"
+```
+
 ## Testing Real Pipelines
 
 We've set up our benchmark to do some real analysis! As a first test, let's make sure we're still running only over the simulation campaign. The `USE_SIMULATION_CAMPAIGN` in `setup.config` should be set to true.
