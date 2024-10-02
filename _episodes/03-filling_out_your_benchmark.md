@@ -200,17 +200,19 @@ The final `simulate` rule should look like this:
 your_benchmark:simulate:
   extends: .phy_benchmark
   stage: simulate
-  needs: ["common:detector", "your_benchmark:generate"]
+  needs: ["common:setup"]
   timeout: 10 hour
   script:
-    - echo "Simulating detector response here!"
+    - echo "Simulating everything here!"
     - config_file=benchmarks/your_benchmark/setup.config
     - source $config_file
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
-    -     echo "Using simulation campaign so skipping this step!"
+    -     echo "Using simulation campaign!"
     - else
     -     echo "Grabbing raw events from S3 and running Geant4"
     -     bash benchmarks/your_benchmark/simulate.sh
+    -     echo "Geant4 simulations done! Starting eicrecon now!"
+    -     bash benchmarks/your_benchmark/reconstruct.sh
     - fi
     - echo "Finished simulating detector response"
   retry:
@@ -219,85 +221,24 @@ your_benchmark:simulate:
       - runner_system_failure
 ```
 
-## The "reconstruct" rule
+## The "results" rule
 
-Now the `reconstruct` rule should look like this:
+The `results` rule in `config.yml` is right now just this:
 ```yaml
-your_benchmark:reconstruct:
+your_benchmark:results:
   extends: .phy_benchmark
-  stage: reconstruct
+  stage: collect
   script:
-    - echo "Event reconstruction here!"
+    - echo "I will collect results here!"
 ```
 
-We need the `simulate` rule to finish before starting the reconstruction so add the line `needs: ["your_benchmark:simulate"]` below `stage: reconstruct`.
-
-In a new line below that, add a timeout: `timeout: 10 hour`.
-
-Again in the script section, source the `setup.config` file:
+Specify that we need to finish the simulate rule first:
 ```yaml
-    - config_file=benchmarks/your_benchmark/setup.config
-    - source $config_file
-```
-
-Now add instructions to do the reconstruction if not using the simulation campaign:
-```yaml
-    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
-    -     echo "Using simulation campaign so skipping this step!"
-    - else
-    -     echo "Running eicrecon!"
-    -     bash benchmarks/your_benchmark/reconstruct.sh
-    - fi
-    - echo "Finished reconstruction"
-```
-
-Finally add an instruction to retry if this fails:
-```yaml
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-```
-
-The `reconstruct` rule should now look like this:
-```yaml
-your_benchmark:reconstruct:
-  extends: .phy_benchmark
-  stage: reconstruct
-  needs: ["your_benchmark:simulate"]
-  timeout: 10 hour
-  script:
-    - echo "Event reconstruction here!"
-    - config_file=benchmarks/your_benchmark/setup.config
-    - source $config_file
-    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
-    -     echo "Using simulation campaign so skipping this step!"
-    - else
-    -     echo "Running eicrecon!"
-    -     bash benchmarks/your_benchmark/reconstruct.sh
-    - fi
-    - echo "Finished reconstruction"
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-```
-
-## The "analyze" rule
-
-The `analyze` rule in `config.yml` is right now just this:
-```yaml
-your_benchmark:analyze:
-  extends: .phy_benchmark
-  stage: analyze
   needs:
-    - ["your_benchmark:reconstruct"]
-  script:
-    - echo "I will analyze events here!"
-    - echo "This step requires that the reconstruct step be completed"
+    - ["your_benchmark:simulate"]
 ```
 
-First make two directories to contain output from the benchmark analysis and source `setup.config` again:
+Now make two directories to contain output from the benchmark analysis and source `setup.config` again:
 ```yaml
     - mkdir -p results/your_benchmark
     - mkdir -p benchmark_output
@@ -321,31 +262,6 @@ If not using the simulation campaign, we can just run the `analyze.sh` script an
     -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
     - fi
     - echo "Finished copying!"
-```
-
-The `analyze` rule should now look like this:
-```yaml
-your_benchmark:analyze:
-  extends: .phy_benchmark
-  stage: analyze
-  needs:
-    - ["your_benchmark:reconstruct"]
-  script:
-    - echo "I will be analyzing events here!"
-    - mkdir -p results/your_benchmark
-    - mkdir -p benchmark_output
-    - config_file=benchmarks/your_benchmark/setup.config
-    - source $config_file
-    - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
-    -     echo "Using simulation campaign!"
-    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
-    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
-    - else
-    -     echo "Not using simulation campaign!"
-    -     bash benchmarks/your_benchmark/analyze.sh
-    -     cp sim_output/nocampaign/plots_figures/*.pdf results/your_benchmark/
-    - fi
-    - echo "Finished copying!" 
 ```
 
 ## Testing Real Pipelines
