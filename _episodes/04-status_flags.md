@@ -72,8 +72,8 @@ We also have to include the appropriate header. At the top of `plot_benchmark.C`
 
 In the main plotting function, the reconstruction efficiency is calculated, then compared against the target:
 ```c++
-int minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
-int maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
+minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
+maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
 double reconstuctionEfficiency = (1.0*h_VM_mass_REC_etacut->Integral(minbineff,maxbineff))/(1.0*h_VM_mass_MC_etacut->Integral(minbineff,maxbineff));
 //set the benchmark status:
 setbenchstatus(reconstuctionEfficiency);
