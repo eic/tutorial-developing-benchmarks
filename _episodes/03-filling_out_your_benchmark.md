@@ -184,6 +184,8 @@ Add instructions that if using the simulation campaign you can skip detector sim
     - else
     -     echo "Grabbing raw events from S3 and running Geant4"
     -     bash benchmarks/your_benchmark/simulate.sh
+    -     echo "Geant4 simulations done! Starting eicrecon now!"
+    -     bash benchmarks/your_benchmark/reconstruct.sh
     - fi
     - echo "Finished simulating detector response"
 ```
@@ -203,7 +205,7 @@ your_benchmark:simulate:
   needs: ["common:setup"]
   timeout: 10 hour
   script:
-    - echo "Simulating everything here!"
+    - echo "I will simulate detector response here!"
     - config_file=benchmarks/your_benchmark/setup.config
     - source $config_file
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
