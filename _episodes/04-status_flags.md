@@ -65,6 +65,11 @@ int setbenchstatus(double eff){
 }
 ```
 
+We also have to include the appropriate header. At the top of  `plot_benchmark.C`, please also add:
+```c++
+#include "common_bench/benchmark.h"
+```
+
 In the main plotting function, the reconstruction efficiency is calculated, then compared against the target:
 ```c++
 int minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
