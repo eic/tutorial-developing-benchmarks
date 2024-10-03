@@ -116,7 +116,7 @@ cp {input.cls} {output.cls_tmp} # copy to local directory
 """
 ```
 
-And make sure that the `analyze` rule in your `config.yml` calls the snakemake compilation rule:
+And make sure that the `your_benchmark:results` job in your `config.yml` calls the snakemake compilation rule:
 
 ```yml
     - snakemake --cores 1 yourbench_compile_manual
