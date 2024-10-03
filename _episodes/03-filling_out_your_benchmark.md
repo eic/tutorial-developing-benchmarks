@@ -112,7 +112,7 @@ OUTPUT_PLOTS_DIR=sim_output/nocampaign
 mkdir -p ${OUTPUT_PLOTS_DIR}
 # Analyze
 command time -v \
-root -l -b -q "benchmarks/your_benchmark/analysis/uchannelrho.cxx+(\"${REC_FILE}\",\"${OUTPUT_PLOTS_DIR}/plots.root\")"
+root -l -b -q "benchmarks/your_benchmark/analysis/uchannelrho.cxx(\"${REC_FILE}\",\"${OUTPUT_PLOTS_DIR}/plots.root\")"
 if [[ "$?" -ne "0" ]] ; then
   echo "ERROR analysis failed"
   exit 1
