@@ -119,11 +119,10 @@ Check the pipelines:
 - [detector benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
 
 
-It may take a while for these to run, so let's [check this example pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/103909).
-- click on the `your_benchmark:results` job.
-- click on Browse to view the artifacts.
-- click on the results tab, and the status-flag file should be available as `your_benchmark.json`
-- download the file and check it out.
+> Exercise
+> - Try to identify several places where the status flag information is kept. It may take a while for these to run, so [check this example pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/103909).
+{: .challenge}
+
 
 
 
