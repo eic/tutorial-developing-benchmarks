@@ -4,13 +4,6 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 
-S3 = S3RemoteProvider(
-    endpoint_url="https://dtn01.sdcc.bnl.gov:9000",
-    access_key_id=os.environ["S3_ACCESS_KEY"],
-    secret_access_key=os.environ["S3_SECRET_KEY"],
-)
-
-
 rule your_benchmark_compile:
     input:
         ROOT_BUILD_DIR_PREFIX + "benchmarks/your_benchmark/analysis/uchannelrho_cxx.so",
@@ -33,14 +26,10 @@ cp {input.cls} {output.cls_tmp} # copy to local directory
 
 
 rule your_benchmark_campaign_reco_get:
-    input:
-        lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        "../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
-    shell:
-        """
-echo "Getting file for INDEX {wildcards.INDEX}"
-ln {input} {output}
+        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.tree.edm4eic.root",
+    shell: """
+xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
 
 
@@ -48,7 +37,7 @@ rule your_benchmark_analysis:
     input:
         script="benchmarks/your_benchmark/analysis/uchannelrho.cxx",
         #script_compiled=ROOT_BUILD_DIR_PREFIX + "benchmarks/your_benchmark/analysis/uchannelrho_cxx.so",
-        data="../../sim_output/campaign_24.07.0_rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
+        data="../../sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root",
     output:
         plots="../../sim_output/campaign_24.07.0_{INDEX}_eicrecon.edm4eic/plots.root",
     shell:
