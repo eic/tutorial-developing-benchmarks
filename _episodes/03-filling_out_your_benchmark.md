@@ -252,8 +252,8 @@ If using the simulation campaign, we can request the rho mass benchmark with sna
 ```yaml
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
     -     echo "Using simulation campaign!"
-    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
-    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
+    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf
+    -     cp ../../sim_output/campaign_24.07.0_combined_45files.eicrecon.tree.edm4eic.plots_figures/*.pdf results/your_benchmark/
 ```
 
 If not using the simulation campaign, we can just run the `analyze.sh` script and copy the results into `results/your_benchmark/` in order to make them into artifacts:
@@ -311,8 +311,8 @@ your_benchmark:results:
     - source $config_file
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
     -     echo "Using simulation campaign!"
-    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
-    -     cp ../../sim_output/campaign_24.07.0_combined_45files_eicrecon.edm4eic.plots_figures/*.pdf results/your_benchmark/
+    -     snakemake --cores 2 ../../sim_output/campaign_24.07.0_combined_45files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf
+    -     cp ../../sim_output/campaign_24.07.0_combined_45files.eicrecon.tree.edm4eic.plots_figures/*.pdf results/your_benchmark/
     - else
     -     echo "Not using simulation campaign!"
     -     bash benchmarks/your_benchmark/analyze.sh
