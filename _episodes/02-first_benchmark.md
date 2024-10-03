@@ -178,7 +178,9 @@ You can click on individual jobs and see output they produce during running. Our
 
 ![Job output on eicweb]({{ page.root }}/fig/eicweb_job_output.png)
 
-There is another important feature that jobs can produce artifacts. They can be any file. Take a look at [this](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/jobs/2284270) "collect_results:barrel_ecal" job, click "Browse" button in the right column, then navigate to "results", there will be some plots produced by the benchmars related to performance of the barrel electromagnetic calorimeter.
+There is another important feature that jobs can produce artifacts. They can be any file. Take a look at [this pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/103955). Go to the "your_benchmark:results" job, click "Browse" button in the right column, then navigate to "results", some of the plots from the benchmark are visible here. 
+
+Right now, our benchmark will not create these plots. We've just set it up to print statements for each job. In the next lesson, we'll learn how to add everything we need to produce these artifacts to our pipelines!
 
 ## Conclusion
 
