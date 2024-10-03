@@ -156,8 +156,8 @@ include: "benchmarks/your_benchmark/Snakefile"
 
 Once that's all setup, we can move on to actually adding these to our pipeline!
 
-## The "simulate" rule
-We now fill out the `simulate` rule in GitLab's pipelines. Currently the instructions for this rule should be contained in `benchmarks/your_benchmark/config.yml` as: 
+## The "simulate" pipeline stage
+We now fill out the `simulate` stage in GitLab's pipelines. Currently the instructions for this rule should be contained in `benchmarks/your_benchmark/config.yml` as: 
 ```yaml
 your_benchmark:simulate:
   extends: .phy_benchmark
@@ -223,9 +223,9 @@ your_benchmark:simulate:
       - runner_system_failure
 ```
 
-## The "results" rule
+## The "results" pipeline stage
 
-The `results` rule in `config.yml` is right now just this:
+The `results` stage in `config.yml` is right now just this:
 ```yaml
 your_benchmark:results:
   extends: .phy_benchmark
@@ -234,7 +234,7 @@ your_benchmark:results:
     - echo "I will collect results here!"
 ```
 
-Specify that we need to finish the simulate rule first:
+Specify that we need to finish the simulate stage first:
 ```yaml
   needs:
     - ["your_benchmark:simulate"]
