@@ -1,6 +1,6 @@
 ---
 title: "Exercise 1: Analysis Scripts and Snakemake"
-teaching: 10
+teaching: 20
 exercises: 10
 questions:
 - "How does one set up data analysis workflows?"
