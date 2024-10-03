@@ -89,10 +89,11 @@ BENCH_DIR = "benchmarks/your_benchmark/" if ENV_MODE == "eicweb" else "./"
 
 rule your_benchmark_campaign_reco_get:
     output:
-        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.tree.edm4eic.root",
+        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     shell: """
 xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
+```
 
 We are giving the Snakefile the S3 access key so it can download the files we request. 
 
@@ -102,15 +103,15 @@ We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule define
 
 After saving the Snakefile, let's try running it. 
 
-The important thing to remember about Snakemake is that Snakemake commands behave like requests. So if I want Snakemake to produce a file called `output.root`, I would type `snakemake --cores 2 output.root`. If there is a rule for producing `output.root`, then Snakemake will find that rule and execute it. We've defined a rule to produce a file called `../../sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv_{INDEX}_eicrecon.edm4eic.root`, but really we can see from the construction of our rule that the `{INDEX}` is a wildcard, so we should put a number there instead. Checking out the [files on S3](https://dtn01.sdcc.bnl.gov:9001/buckets/eictest/browse/RVBJQy9SRUNPLzI0LjA3LjAvZXBpY19jcmF0ZXJsYWtlL0VYQ0xVU0lWRS9VQ0hBTk5FTF9SSE8vMTB4MTAwLw==), we see files with indices from `0000` up to `0048`. Let's request that Snakemake download the file `rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root`:
+The important thing to remember about Snakemake is that Snakemake commands behave like requests. So if I want Snakemake to produce a file called `output.root`, I would type `snakemake --cores 2 output.root`. If there is a rule for producing `output.root`, then Snakemake will find that rule and execute it. We've defined a rule to produce a file called `../../sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{INDEX}.eicrecon.edm4eic.root`, but really we can see from the construction of our rule that the `{INDEX}` is a wildcard, so we should put a number there instead. Checking out the [files on S3](https://dtn01.sdcc.bnl.gov:9001/buckets/eictest/browse/RVBJQy9SRUNPLzI0LjA3LjAvZXBpY19jcmF0ZXJsYWtlL0VYQ0xVU0lWRS9VQ0hBTk5FTF9SSE8vMTB4MTAwLw==), we see files with indices from `0000` up to `0048`. Let's request that Snakemake download the file `rho_10x100_uChannel_Q2of0to10_hiDiv.0005.eicrecon.edm4eic.root`:
 ```bash
-snakemake --cores 2 sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv_0000_eicrecon.edm4eic.root
+snakemake --cores 2 sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.0000.eicrecon.edm4eic.root
 ```
 
 Snakemake now looks for the rule it needs to produce that file. It finds the rule we wrote, and it downloads the file. Check for the file:
 ```bash
 ls sim_output/
-    rho_10x100_uChannel_Q2of0to10_hiDiv_0000_eicrecon.edm4eic.root
+    rho_10x100_uChannel_Q2of0to10_hiDiv.0000.eicrecon.edm4eic.root
 ```
 
 Okay whatever... so we download a file. It doesn't look like Snakemake really adds anything at this point.
@@ -121,9 +122,9 @@ But the benefits from using Snakemake become more apparent as the number of task
 rule your_benchmark_analysis:
     input:
         script=f"{BENCH_DIR}analysis/uchannelrho.cxx",
-        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
+        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.edm4eic.root",
     output:
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic/plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.edm4eic/plots.root",
     shell:
         """
 mkdir -p $(dirname "{output.plots}")
@@ -133,18 +134,18 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 
 This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from S3 as input data, and it runs the analysis script `uchannelrho.cxx`.
 
-Now let's request the output file `"sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv_0005_eicrecon.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
+Now let's request the output file `"sim_output/campaign_24.07.0_0005.eicrecon.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.0005.eicrecon.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
 
 Let's try it out:
 ```bash
-snakemake --cores 2 sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/plots.root
+snakemake --cores 2 sim_output/campaign_24.07.0_0005.eicrecon.edm4eic/plots.root
 ```
 
 You should see something like this: 
 ![Snakemake output second rule]({{ page.root }}/fig/snakemake_output_rule2_new.png)
 Check for the output file:
 ```bash
-ls sim_output/campaign_24.07.0_0005_eicrecon.edm4eic/
+ls sim_output/campaign_24.07.0_0005.eicrecon.edm4eic/
 ```
 You should see `plots.root`.
 
@@ -154,13 +155,13 @@ That's still not very impressive. Snakemake gets more useful when we want to run
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}_eicrecon.edm4eic/plots.root",
+           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
@@ -171,7 +172,7 @@ On its face, this rule just adds root files using the `hadd` command. But by spe
 
 Let's test it out by requesting it combine 10 files:
 ```bash
-snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots.root
+snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files.eicrecon.edm4eic.plots.root
 ```
 It will spend some time downloading files and running the analysis code. Then it should hadd the files:
 ![Snakemake output third rule]({{ page.root }}/fig/snakemake_output_rule3_new.png)
@@ -186,9 +187,9 @@ Now let's add one more rule to create benchmark plots:
 rule your_benchmark_plots:
     input:
         script=f"{BENCH_DIR}macros/plot_rho_physics_benchmark.C",
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots.root",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
     shell:
         """
 if [ ! -d "{input.plots}_figures" ]; then
@@ -203,12 +204,12 @@ root -l -b -q '{input.script}("{input.plots}")'
 
 Now run the new rule by requesting a benchmark figure made from 10 simulation campaign files:
 ```bash
-snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files.eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
 ```
 
 Now check that the three benchmark figures were created: 
 ```
-ls sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/*.pdf
+ls sim_output/campaign_24.07.0_combined_10files.eicrecon.edm4eic.plots_figures/*.pdf
 ```
 You should see three pdfs. 
 We did it!
@@ -216,7 +217,7 @@ We did it!
 Now that our Snakefile is totally set up, the big advantage of Snakemake is how it manages your workflow. 
 If you edit the plotting macro and then rerun:
 ```bash
-snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
+snakemake --cores 2 sim_output/campaign_24.07.0_combined_10files.eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf
 ```
 Snakemake will recognize that simulation campaign files have already been downloaded, that the analysis scripts have already run, and the files have already been combined. It will only run the last step, the plotting macro, if that's the only thing that needs to be re-run.
 
@@ -248,7 +249,7 @@ rule your_benchmark_campaign_reco_get:
     input:
         lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
+        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.edm4eic.root",
     shell:
         """
 echo "Getting file for INDEX {wildcards.INDEX}"
@@ -258,9 +259,9 @@ ln {input} {output}
 rule your_benchmark_analysis:
     input:
         script=f"{BENCH_DIR}analysis/uchannelrho.cxx",
-        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
+        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.edm4eic.root",
     output:
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic/plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.edm4eic/plots.root",
     shell:
         """
 mkdir -p $(dirname "{output.plots}")
@@ -270,13 +271,13 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}_eicrecon.edm4eic/plots.root",
+           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
@@ -285,9 +286,9 @@ hadd {output} {input}
 rule your_benchmark_plots:
     input:
         script=f"{BENCH_DIR}macros/plot_rho_physics_benchmark.C",
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots.root",
+        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots.root",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files_eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.edm4eic.plots_figures/benchmark_rho_mass.pdf",
     shell:
         """
 if [ ! -d "{input.plots}_figures" ]; then
