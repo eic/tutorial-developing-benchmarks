@@ -95,6 +95,8 @@ xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLU
 """
 ```
 
+If you're having trouble copying and pasting, you can also copy from [here](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/Snakefile).
+
 Thinking ahead to when we want to put our benchmark on eicweb, we add this `ENV_MODE` variable which allows us to specify paths differently based on whether we're running locally or in GitLab's pipelines.
 
 We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from the JLab servers to the location `sim_output`.
