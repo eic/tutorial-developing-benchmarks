@@ -4,7 +4,7 @@ source strict-mode.sh
 source benchmarks/your_benchmark/setup.config $*
 
 if [ -f ${INPUT_FILE} ]; then
-  echo "ERROR: Input simulation file does ${INPUT_FILE} not exist."
+  echo "ERROR: Input simulation file ${INPUT_FILE} does not exist."
 else
   echo "GOOD: Input simulation file ${INPUT_FILE} exists!"
 fi
