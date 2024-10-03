@@ -74,7 +74,7 @@ With this analysis as a starting point, we'll next explore using Snakemake to de
 We'll now use a tool called Snakemake to define an analysis workflow that will come in handy when building analysis pipelines.
 
 In order to demonstrate the advantages of using snakefiles, let's start using them for our analysis.
-First let's use snakemake to grab some simulation campaign files from the S3 storage space. In your `tutorial_directory/starting_script/` directory make a new file called `Snakefile`.
+First let's use snakemake to grab some simulation campaign files from the online storage space. In your `tutorial_directory/starting_script/` directory make a new file called `Snakefile`.
 Open the file and add these lines:
 ```python
 import os
@@ -95,11 +95,9 @@ xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLU
 """
 ```
 
-We are giving the Snakefile the S3 access key so it can download the files we request. 
+Thinking ahead to when we want to put our benchmark on eicweb, we add this `ENV_MODE` variable which allows us to specify paths differently based on whether we're running locally or in GitLab's pipelines.
 
-Thinking ahead to when we want to put our benchmark on eicweb, we also add this `ENV_MODE` variable which allows us to specify paths differently based on whether we're running locally or in GitLab's pipelines.
-
-We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from S3 to the location `sim_output`.
+We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from the JLab servers to the location `sim_output`.
 
 After saving the Snakefile, let's try running it. 
 
@@ -132,7 +130,7 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 """
 ```
 
-This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from S3 as input data, and it runs the analysis script `uchannelrho.cxx`.
+This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from JLab as input data, and it runs the analysis script `uchannelrho.cxx`.
 
 Now let's request the output file `"sim_output/campaign_24.07.0_0005.eicrecon.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.0005.eicrecon.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
 
