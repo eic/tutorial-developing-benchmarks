@@ -21,7 +21,7 @@ Benchmarks are currently organized into two repositories:
 Let's make a physics benchmark. In the previous lesson, we were working in the `tutorial_directory/starting_script` direcotry. Let's go back one directory to `tutorial_directory/` and start by cloning the git repository:
 
 ```bash
-git clone https://github.com/eic/physics_benchmarks.git
+git clone git@github.com:eic/physics_benchmarks.git
 cd physics_benchmarks
 ```
 
@@ -153,7 +153,7 @@ git push origin pr/your_benchmark_<mylastname>
 ```
 *(Replace `<mylastname>` with your last name.)*
 
-1. This should instruct you to go to `https://github.com/eic/detector_benchmarks/compare/master...pr/your_benchmark_<mylastname>` to create a PR. Follow that link.
+1. This should instruct you to go to `https://github.com/eic/physics_benchmarks/pull/new/pr/your_benchmark_<mylastname>` to create a PR. Follow that link.
 3. ![Add a title]({{ page.root }}/fig/github_add_a_title.png) Provide a title like "Adding benchmark for ...".
 4. ![Create draft pull request]({{ page.root }}/fig/github_switch_to_draft.png) Since this work is not yet complete, open dropdown menu of the "Create pull requst" button and select "Create draft pull request"
 5. ![Draft pull request]({{ page.root }}/fig/github_draft_pull_request.png) Click "Draft pull request"
