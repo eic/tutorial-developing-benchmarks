@@ -78,14 +78,7 @@ First let's use snakemake to grab some simulation campaign files from the S3 sto
 Open the file and add these lines:
 ```python
 import os
-from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
-
-S3 = S3RemoteProvider(
-    endpoint_url="https://dtn01.sdcc.bnl.gov:9000",
-    access_key_id=os.environ["S3_ACCESS_KEY"],
-    secret_access_key=os.environ["S3_SECRET_KEY"],
-)
 
 # Set environment mode (local or eicweb)
 ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
@@ -95,16 +88,11 @@ OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
 BENCH_DIR = "benchmarks/your_benchmark/" if ENV_MODE == "eicweb" else "./"
 
 rule your_benchmark_campaign_reco_get:
-    input:
-        lambda wildcards: S3.remote(f"eictest/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root"),
     output:
-        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv_{% raw %}{{INDEX}}{% endraw %}_eicrecon.edm4eic.root",
-    shell:
-        """
-echo "Getting file for INDEX {wildcards.INDEX}"
-ln {input} {output}
+        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.tree.edm4eic.root",
+    shell: """
+xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
-```
 
 We are giving the Snakefile the S3 access key so it can download the files we request. 
 
