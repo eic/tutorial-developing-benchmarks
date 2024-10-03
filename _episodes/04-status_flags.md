@@ -33,7 +33,7 @@ Just remember that a status flag that is raised too often stops being alarming t
 
 ## Adding a Status Flag to Your Benchmark
 
-To add a status flag, first define a function to set the benchmark status. In this example, the following function was added to the plotting macro `plot_benchmark.C`:
+To add a status flag, first define a function to set the benchmark status. In this example, the following function was added to the plotting macro `benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C`:
 
 ```c++
 ///////////// Set benchmark status!
