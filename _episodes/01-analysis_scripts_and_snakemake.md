@@ -78,7 +78,6 @@ First let's use snakemake to grab some simulation campaign files from the online
 Open the file and add these lines:
 ```python
 import os
-from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 # Set environment mode (local or eicweb)
 ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
@@ -229,7 +228,6 @@ If we want to scale up the plots to include 15 simulation campaign files instead
 The final Snakefile should look like this:
 ```python
 import os
-from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 # Set environment mode (local or eicweb)
 ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
