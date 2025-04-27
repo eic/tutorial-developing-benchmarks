@@ -36,7 +36,7 @@ Copy the following files to this working directory:
 
 We will also start by running over a file from the simulation campaign. Download it to your workspace:
 ```bash
-xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root ./
+xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.tree.edm4eic.root ./
 ```
 
 Organize files into `analysis` and `macros` directories:
@@ -90,7 +90,7 @@ rule your_benchmark_campaign_reco_get:
     output:
         f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     shell: """
-xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
+xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
 ```
 
@@ -240,7 +240,7 @@ rule your_benchmark_campaign_reco_get:
     output:
         f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     shell: """
-xrdcp root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
+xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
 
 rule your_benchmark_analysis:

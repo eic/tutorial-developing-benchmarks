@@ -31,7 +31,7 @@ USE_SIMULATION_CAMPAIGN=true
 N_EVENTS=100
 
 FILE_BASE=sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.hepmc3.tree
-INPUT_FILE=root://dtn-eic.jlab.org//work/eic2/EPIC/EVGEN/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.hepmc3.tree.root
+INPUT_FILE=root://dtn-eic.jlab.org//volatile/eic/EPIC/EVGEN/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.hepmc3.tree.root
 OUTPUT_FILE=${FILE_BASE}.detectorsim.root
 
 REC_FILE_BASE=${FILE_BASE}.detectorsim.edm4eic
