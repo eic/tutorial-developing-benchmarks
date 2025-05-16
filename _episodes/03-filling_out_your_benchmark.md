@@ -182,7 +182,7 @@ Add instructions that if using the simulation campaign you can skip detector sim
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
     -     echo "Using simulation campaign so skipping this step!"
     - else
-    -     echo "Grabbing raw events from S3 and running Geant4"
+    -     echo "Grabbing raw events from XRootD and running Geant4"
     -     bash benchmarks/your_benchmark/simulate.sh
     -     echo "Geant4 simulations done! Starting eicrecon now!"
     -     bash benchmarks/your_benchmark/reconstruct.sh
@@ -211,7 +211,7 @@ your_benchmark:simulate:
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
     -     echo "Using simulation campaign!"
     - else
-    -     echo "Grabbing raw events from S3 and running Geant4"
+    -     echo "Grabbing raw events from XRootD and running Geant4"
     -     bash benchmarks/your_benchmark/simulate.sh
     -     echo "Geant4 simulations done! Starting eicrecon now!"
     -     bash benchmarks/your_benchmark/reconstruct.sh
@@ -286,7 +286,7 @@ your_benchmark:simulate:
     - if [ "$USE_SIMULATION_CAMPAIGN" = true ] ; then
     -     echo "Using simulation campaign!"
     - else
-    -     echo "Grabbing raw events from S3 and running Geant4"
+    -     echo "Grabbing raw events from XRootD and running Geant4"
     -     bash benchmarks/your_benchmark/simulate.sh
     -     echo "Geant4 simulations done! Starting eicrecon now!"
     -     bash benchmarks/your_benchmark/reconstruct.sh
