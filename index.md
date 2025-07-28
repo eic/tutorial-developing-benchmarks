@@ -16,7 +16,7 @@ Benchmarks are scripts that run detector simulations and analyze the resulting d
 > Further information is included in other tutorials:
 >
 > - [Geometry Development with DD4hep](https://eic.github.io/tutorial-geometry-development-using-dd4hep/)
-> - [Simulations Using DDsim and Geant4](https://eic.github.io/tutorial-simulations-using-ddsim-and-geant4/)
+> - [Simulations Using npsim and Geant4](https://eic.github.io/tutorial-simulations-using-npsim-and-geant4/)
 > - [Reconstruction Algorithms in JANA2](https://eic.github.io/tutorial-jana2)
 > - [Making an Analysis](https://eic.github.io/tutorial-analysis/)
 {: .prereq}
