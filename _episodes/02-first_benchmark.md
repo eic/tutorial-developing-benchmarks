@@ -52,7 +52,7 @@ mkdir benchmarks/your_benchmark
 
 The Continuous Integration system needs to know what steps it has to execute. This is specified using YAML files. Create a file `benchmarks/your_benchmark/config.yml`.
 
-For a physics benchmark and to follow along with this tutorial, create a `config.yml` with the following contents:
+For a physics benchmark, create a `config.yml` with the following contents:
 ~~~
 your_benchmark:compile:
   extends: .phy_benchmark 
@@ -69,6 +69,8 @@ your_benchmark:simulate:
 your_benchmark:results:
   extends: .phy_benchmark
   stage: collect
+  needs:
+    - ["your_benchmark:simulate"]
   script:
     - echo "I will collect results here!"
 
