@@ -24,8 +24,6 @@ Create a new file: [`benchmarks/your_benchmark/setup.config`](https://github.com
 #!/bin/bash
 source strict-mode.sh
 
-export ENV_MODE=eicweb
-
 USE_SIMULATION_CAMPAIGN=true
 
 N_EVENTS=100
