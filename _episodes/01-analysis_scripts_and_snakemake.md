@@ -77,26 +77,15 @@ In order to demonstrate the advantages of using snakefiles, let's start using th
 First let's use snakemake to grab some simulation campaign files from the online storage space. In your `tutorial_directory/starting_script/` directory make a new file called `Snakefile`.
 Open the file and add these lines:
 ```python
-import os
-
-# Set environment mode (local or eicweb)
-ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
-# Output directory based on environment
-OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
-# Benchmark directory based on environment
-BENCH_DIR = "benchmarks/your_benchmark/" if ENV_MODE == "eicweb" else "./"
-
 rule your_benchmark_campaign_reco_get:
     output:
-        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
+        f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     shell: """
 xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
 ```
 
 If you're having trouble copying and pasting, you can also copy from [here](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/Snakefile).
-
-Thinking ahead to when we want to put our benchmark on eicweb, we add this `ENV_MODE` variable which allows us to specify paths differently based on whether we're running locally or in GitLab's pipelines.
 
 We also defined a new rule: `your_benchmark_campaign_reco_get`. This rule defines how to download a single file from the JLab servers to the location `sim_output`.
 
@@ -120,10 +109,10 @@ But the benefits from using Snakemake become more apparent as the number of task
 ```python
 rule your_benchmark_analysis:
     input:
-        script=f"{BENCH_DIR}analysis/uchannelrho.cxx",
-        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
+        script=workflow.source_path("analysis/uchannelrho.cxx"),
+        data=f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     output:
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
+        plots=f"sim_output/campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
     shell:
         """
 mkdir -p $(dirname "{output.plots}")
@@ -131,7 +120,7 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 """
 ```
 
-This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from JLab as input data, and it runs the analysis script `uchannelrho.cxx`.
+This rule runs an analysis script to create ROOT files containing plots. The rule uses the simulation campaign file downloaded from JLab as input data, and it runs the analysis script `uchannelrho.cxx`. Note that we use `workflow.source_path()` to reference the script - this function returns the correct path to the script relative to the Snakefile's location in the benchmark directory.
 
 Now let's request the output file `"sim_output/campaign_24.07.0_0005.eicrecon.tree.edm4eic/plots.root"`. When we request this, Snakemake will identify that it needs to run the new `your_benchmark_analysis` rule. But in order to do this, it now needs a file we don't have: `sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.0005.eicrecon.tree.edm4eic.root` because we only downloaded the file with index `0000` already. What Snakemake will do automatically is recognize that in order to get that file, it first needs to run the `your_benchmark_campaign_reco_get` rule. It will do this first, and then circle back to the `your_benchmark_analysis` rule. 
 
@@ -154,13 +143,13 @@ That's still not very impressive. Snakemake gets more useful when we want to run
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
+           f"sim_output/campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
+        f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
@@ -185,10 +174,10 @@ Now let's add one more rule to create benchmark plots:
 ```python
 rule your_benchmark_plots:
     input:
-        script=f"{BENCH_DIR}macros/plot_rho_physics_benchmark.C",
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
+        script=workflow.source_path("macros/plot_rho_physics_benchmark.C"),
+        plots=f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+        f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf",
     shell:
         """
 if [ ! -d "{input.plots}_figures" ]; then
@@ -227,28 +216,20 @@ If we want to scale up the plots to include 15 simulation campaign files instead
 
 The final Snakefile should look like this:
 ```python
-import os
-
-# Set environment mode (local or eicweb)
-ENV_MODE = os.getenv("ENV_MODE", "local")  # Defaults to "local" if not set
-# Output directory based on environment
-OUTPUT_DIR = "../../sim_output/" if ENV_MODE == "eicweb" else "sim_output/"
-# Benchmark directory based on environment
-BENCH_DIR = "benchmarks/your_benchmark/" if ENV_MODE == "eicweb" else "./"
-
 rule your_benchmark_campaign_reco_get:
     output:
-        f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
+        f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
+    retries: 3
     shell: """
 xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/24.07.0/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.tree.edm4eic.root {output}
 """
 
 rule your_benchmark_analysis:
     input:
-        script=f"{BENCH_DIR}analysis/uchannelrho.cxx",
-        data=f"{OUTPUT_DIR}rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
+        script=workflow.source_path("analysis/uchannelrho.cxx"),
+        data=f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic.root",
     output:
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
+        plots=f"sim_output/campaign_24.07.0_{% raw %}{{INDEX}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
     shell:
         """
 mkdir -p $(dirname "{output.plots}")
@@ -258,13 +239,13 @@ root -l -b -q '{input.script}+("{input.data}","{output.plots}")'
 rule your_benchmark_combine:
     input:
         lambda wildcards: expand(
-           f"{OUTPUT_DIR}campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
+           f"sim_output/campaign_24.07.0_{% raw %}{{INDEX:04d}}{% endraw %}.eicrecon.tree.edm4eic/plots.root",
            INDEX=range(int(wildcards.N)),
         ),	
     wildcard_constraints:
         N="\d+",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
+        f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
     shell:
         """
 hadd {output} {input}
@@ -272,10 +253,10 @@ hadd {output} {input}
 
 rule your_benchmark_plots:
     input:
-        script=f"{BENCH_DIR}macros/plot_rho_physics_benchmark.C",
-        plots=f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
+        script=workflow.source_path("macros/plot_rho_physics_benchmark.C"),
+        plots=f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots.root",
     output:
-        f"{OUTPUT_DIR}campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf",
+        f"sim_output/campaign_24.07.0_combined_{% raw %}{{N}}{% endraw %}files.eicrecon.tree.edm4eic.plots_figures/benchmark_rho_mass.pdf",
     shell:
         """
 if [ ! -d "{input.plots}_figures" ]; then
