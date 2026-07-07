@@ -8,11 +8,15 @@
 
 #include "ROOT/RDataFrame.hxx"
 #include <TH1D.h>
+#include <TProfile2D.h>
 #include <TFitResult.h>
 #include <TRandom3.h>
 #include <TCanvas.h>
 #include <TSystem.h>
 #include "TFile.h"
+#include "TChain.h"
+#include "TTreeReader.h"
+#include "TTreeReaderArray.h"
 #include "TLorentzVector.h"
 #include "TLorentzRotation.h"
 #include "TVector2.h"
@@ -47,11 +51,11 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 	TTreeReader tree_reader(tree);       // !the tree reader
 	
 	//MC-level track attributes
-	TTreeReaderArray<int>   mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
-	TTreeReaderArray<float> mc_px_array = {tree_reader, "MCParticles.momentum.x"};
-	TTreeReaderArray<float> mc_py_array = {tree_reader, "MCParticles.momentum.y"};
-	TTreeReaderArray<float> mc_pz_array = {tree_reader, "MCParticles.momentum.z"};
-	TTreeReaderArray<int>   mc_pdg_array= {tree_reader, "MCParticles.PDG"};
+	TTreeReaderArray<int>    mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
+	TTreeReaderArray<double> mc_px_array = {tree_reader, "MCParticles.momentum.x"};
+	TTreeReaderArray<double> mc_py_array = {tree_reader, "MCParticles.momentum.y"};
+	TTreeReaderArray<double> mc_pz_array = {tree_reader, "MCParticles.momentum.z"};
+	TTreeReaderArray<int>    mc_pdg_array= {tree_reader, "MCParticles.PDG"};
 
 	//Reco-level track attributes
 	TTreeReaderArray<float> reco_px_array = {tree_reader, "ReconstructedChargedParticles.momentum.x"};
@@ -60,8 +64,11 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 	TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedParticles.charge"};
 	TTreeReaderArray<int>   reco_type     = {tree_reader,"ReconstructedChargedParticles.type"};
 	
-	TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticleAssociations.recID"};
-	TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticleAssociations.simID"};
+	// The association simID/recID are now stored as podio relation branches.
+	// _ReconstructedChargedParticleAssociations_sim.index is the index into the
+	// MCParticles collection; _..._rec.index is the index into ReconstructedChargedParticles.
+	TTreeReaderArray<int> rec_id = {tree_reader, "_ReconstructedChargedParticleAssociations_rec.index"};
+	TTreeReaderArray<int> sim_id = {tree_reader, "_ReconstructedChargedParticleAssociations_sim.index"};
 	
 	TString output_name_dir = outputfile;
 	cout << "Output file = " << output_name_dir << endl;
@@ -124,39 +131,49 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 		bool isPiPlusFound = false;
 		bool isProtonFound = false;
 		
+		// Map each reconstructed-track index to the MC-particle index it is
+		// associated with. The association is a separate collection: for entry ia
+		// rec_id[ia] is the ReconstructedChargedParticles index and sim_id[ia] the
+		// MCParticles index. We must look up by rec_id rather than assume the
+		// association collection is aligned with the track collection.
+		std::vector<int> simForRec(reco_pz_array.GetSize(), -1);
+		for(unsigned int ia=0; ia<rec_id.GetSize(); ia++){
+			int ri = rec_id[ia];
+			if(ri>=0 && ri<(int)simForRec.size()) simForRec[ri] = sim_id[ia];
+		}
+
 		//track loop
 		int numpositivetracks = 0;
-		int failed = 0;
 		for(unsigned int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
 			TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
-			
-			//  Rotate in order to account for crossing angle 
+
+			//  Rotate in order to account for crossing angle
 			//  and express coordinates in hadron beam pipe frame
 			//  This is just a patch, not a final solution.
 			trk.RotateY(0.025);
-	
-			if(reco_type[itrk] == -1){ 
-				failed++;
+
+			if(reco_type[itrk] == -1){
 				continue;
 			}
-	
 
-		  if(reco_charge_array[itrk]>0){ 
-				numpositivetracks++; 
-			  if ((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==1){
-			    piplusREC.SetVectM(trk,MASS_PION); 
+			int thisSim = simForRec[itrk];
+
+		  if(reco_charge_array[itrk]>0){
+				numpositivetracks++;
+			  if ((thisSim==4 || thisSim==5) && reco_charge_array[itrk]==1){
+			    piplusREC.SetVectM(trk,MASS_PION);
 			    isPiPlusFound=true;
 			  }
-		     if(sim_id[itrk - failed]==6){
+		     if(thisSim==6){
 		     	protonRECasifpion.SetVectM(trk,MASS_PION);
-		     	isProtonFound=true; 
+		     	isProtonFound=true;
 		     }
 			}
-		  if(reco_charge_array[itrk]<0){ 
-		  	piminusREC.SetVectM(trk,MASS_PION); 
-		  	if((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==-1)	isPiMinusFound=true;
+		  if(reco_charge_array[itrk]<0){
+		  	piminusREC.SetVectM(trk,MASS_PION);
+		  	if((thisSim==4 || thisSim==5) && reco_charge_array[itrk]==-1)	isPiMinusFound=true;
 		  }
-			
+
 		}
 		
 		//4vector of VM;
