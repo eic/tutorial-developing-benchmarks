@@ -2,14 +2,19 @@
 title: "Exercise 4: Adding a Status Flag"
 teaching: 10
 exercises: 10
-questions:
-- "How can your benchmark indicate that there were detrimental changes to software or detector design?"
-objectives:
-- "Learn what a status flag is and how to add one to your benchmark"
-keypoints:
-- "Status flags are used to indicate detrimental changes to software/detector design"
-- "Add a status flag to your benchmark to alert developers to changes in performance"
 ---
+
+::::::::::::::::::::::::::::::::::::::::::::::: questions
+
+- How can your benchmark indicate that there were detrimental changes to software or detector design?
+
+:::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::: objectives
+
+- Learn what a status flag is and how to add one to your benchmark
+
+:::::::::::::::::::::::::::::::::::::::::::::::
 
 We've created a benchmark and tested it with GitLab's CI tools. Now let's explore one of the tools available to us to alert fellow developers when there has been a detrimental change in performance for your benchmark.
 
@@ -20,11 +25,12 @@ A typical benchmark might have 5 to 20 figures which each may or may not be usef
 As a benchmark developer, the way you can design this into your benchmark is with a status flag. Status flags are binary pass/fail flags which are summarized at the end of a pipeline. These allow other developers to quickly identify any detrimental changes they may have made to the EIC software environment.
 
 At the completion of one of GitLab's pipelines, the status flags from each benchmark are gathered and summarized like this one:
-<img src="{{ page.root }}/fig/example_status.png" alt="Status flag example" width="500">
+<img src="fig/example_status.png" alt="Status flag example" width="500">
 
 You can think about what quantities might be relevant to monitor. For example, since the u-channel rho benchmark is being used to evaluate the performance of the B0 trackers, this benchmark has a status flag assigned to the efficiency of rho reconstruction within the B0. In the April campaign, this efficiency was observed to be at roughly 95%. A flag was set such that if the efficiency dropped below 90%, it would indicate notable degredation of the performance of far-forward tracking.
 
 Depending on your observable, you might set a status flag on:
+
 - the mass width of a reconstructed particle
 - reconstructed momentum resolution
 - energy resolution in a calorimeter
@@ -66,11 +72,13 @@ int setbenchstatus(double eff){
 ```
 
 We also have to include the appropriate header. At the top of `plot_benchmark.C`, please also add:
+
 ```c++
 #include "common_bench/benchmark.h"
 ```
 
 In the main plotting function, the reconstruction efficiency is calculated, then compared against the target:
+
 ```c++
 minbineff = h_VM_mass_MC_etacut->FindBin(0.6);
 maxbineff = h_VM_mass_MC_etacut->FindBin(1.0);
@@ -81,7 +89,8 @@ setbenchstatus(reconstuctionEfficiency);
 
 Now every time the plotting macro is run, it will generate the `json` file `benchmark_output/u_rho_eff.json` with this status flag. In order propagate this flag through the pipeline, you need also to create a top-level `json` file which will collect all status flags in your benchmark. 
 
-In your benchmark directory, create a file titled `benchmark.json`, or copy [this one](https://github.com/eic/tutorial-developing-benchmarks/blob/gh-pages/files/benchmark.json). The file should contain a name and title for your benchmark, as well as a description:
+In your benchmark directory, create a file titled `benchmark.json`, or copy [this ready-made benchmark.json](files/benchmark.json). The file should contain a name and title for your benchmark, as well as a description:
+
 ```json
 {
   "name": "YOUR BENCHMARK NAME",
@@ -92,19 +101,22 @@ In your benchmark directory, create a file titled `benchmark.json`, or copy [thi
 ```
 
 To keep the status flags as artifacts, also add these lines to the end of the `results` rule in your `config.yml`
-```yml
+
+```yaml
     - echo "Finished, copying over json now"
     - cp benchmark_output/u_rho_eff.json results/your_benchmark/
     - echo "Finished copying!" 
 ```
 
 The status flags from your benchmark should all collected and summarized in this stage of the pipeline too. To do this, include the following lines at the end of the stage:
-```yml
+
+```yaml
      - collect_tests.py your_benchmark
      - echo "Finished collecting!"
 ```
 
 Now push to GitHub!
+
 ```bash
 git add benchmarks/your_benchmark/config.yml
 git add benchmarks/your_benchmark/macros/plot_rho_physics_benchmark.C
@@ -115,16 +127,27 @@ git push origin pr/your_benchmark_<mylastname>
 ```
 
 Check the pipelines: 
+
 - [physics benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines)
 - [detector benchmarks](https://eicweb.phy.anl.gov/EIC/benchmarks/detector_benchmarks/-/pipelines)
 
+::::::::::::::::::::::::::::::::::::::::::::::: challenge
 
-> Exercise
-> - Try to identify several places where the status flag information is kept. It may take a while for these to run, so [check this example pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/103909).
-{: .challenge}
+## Exercise
 
+- Try to identify several places where the status flag information is kept. It may take a while for these to run, so [check this example pipeline](https://eicweb.phy.anl.gov/EIC/benchmarks/physics_benchmarks/-/pipelines/103909).
 
+::::::::::::::: solution
 
+The status flag information is stored in several places: the per-test `benchmark_output/u_rho_eff.json` written by the plotting macro, the top-level `benchmark.json` in your benchmark directory, the copies kept as artifacts under `results/your_benchmark/`, and the summary produced by `collect_tests.py` at the `finish` stage of the pipeline.
 
+:::::::::::::::
 
+:::::::::::::::::::::::::::::::::::::::::::::::
 
+::::::::::::::::::::::::::::::::::::::::::::::: keypoints
+
+- Status flags are used to indicate detrimental changes to software/detector design
+- Add a status flag to your benchmark to alert developers to changes in performance
+
+:::::::::::::::::::::::::::::::::::::::::::::::
