@@ -12,7 +12,7 @@ home:
 template:
   package: varnish
   params:
-    time: 2026-07-07 13:01:47 +0000
+    time: 2026-07-10 15:33:41 +0000
     source: https://github.com/eic/tutorial-developing-benchmarks
     branch: main
     contact: team@carpentries.org
