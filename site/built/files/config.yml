@@ -1,0 +1,33 @@
+sim:your_benchmark_electron:
+  extends: .det_benchmark 
+  stage: simulate
+  script:
+    - echo "I will be simulating some electron events here!"
+
+sim:your_benchmark_photon:
+  extends: .det_benchmark 
+  stage: simulate
+  script:
+    - echo "I will be simulating some photon events here!"
+
+calib:your_benchmark:
+  extends: .det_benchmark 
+  stage: calibrate
+  script:
+    - echo "Calibrations here!... or not"
+
+bench:your_benchmark:
+  extends: .det_benchmark
+  stage: benchmarks
+  needs:
+    - ["sim:your_benchmark_electron", "sim:your_benchmark_photon"]
+  script:
+    - echo "I will be analyzing events here!"
+
+collect_results:your_benchmark:
+  extends: .det_benchmark
+  stage: collect
+  needs:
+    - ["bench:your_benchmark"]
+  script:
+    - echo "Collect results here!"

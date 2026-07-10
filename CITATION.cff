@@ -1,0 +1,33 @@
+# This CITATION.cff file provides information used to cite this lesson.
+# Visit https://citation-file-format.github.io/ for the format reference,
+# and update the author list and other fields as the lesson develops.
+
+cff-version: 1.2.0
+title: 'Developing Benchmarks (ePIC tutorial)'
+message: >-
+  Please cite this lesson using the information in this file
+  when you refer to it in publications, and/or if you
+  re-use, adapt, or expand on the content in your own
+  training material.
+type: dataset
+authors:
+  - given-names: Torri
+    family-names: Jeske
+  - given-names: Dmitry
+    family-names: Kalinkin
+  - name: The ePIC Collaboration
+abstract: >-
+  An ePIC tutorial that shows analyzers how to turn an analysis script into a
+  benchmark: defining Snakemake workflows, running on eicweb GitLab continuous
+  integration, adding status flags, and producing useful benchmark figures.
+  Built with The Carpentries Workbench.
+keywords:
+  - EIC
+  - ePIC
+  - benchmarks
+  - Snakemake
+  - GitLab CI
+  - continuous integration
+  - detector performance
+repository-code: 'https://github.com/eic/tutorial-developing-benchmarks'
+license: CC-BY-4.0
