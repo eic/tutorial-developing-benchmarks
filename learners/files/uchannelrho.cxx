@@ -60,8 +60,8 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 	TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedParticles.charge"};
 	TTreeReaderArray<int>   reco_type     = {tree_reader,"ReconstructedChargedParticles.type"};
 	
-	TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticleAssociations.recID"};
-	TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticleAssociations.simID"};
+	TTreeReaderArray<unsigned int> rec_id = {tree_reader, "_ReconstructedChargedParticleLinks_from.index"};
+	TTreeReaderArray<unsigned int> sim_id = {tree_reader, "_ReconstructedChargedParticleLinks_to.index"};
 	
 	TString output_name_dir = outputfile;
 	cout << "Output file = " << output_name_dir << endl;
