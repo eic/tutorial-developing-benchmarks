@@ -124,9 +124,22 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 		bool isPiPlusFound = false;
 		bool isProtonFound = false;
 		
+		// Map each reconstructed-track index to the MC-particle index it is
+		// associated with. The association is a separate collection: for entry ia
+		// rec_id[ia] is the ReconstructedChargedParticles index and sim_id[ia] the
+		// MCParticles index. We must look up by rec_id rather than assume the
+		// association collection is aligned with the track collection.
+		// Not creating this map would rely on the brittle assumption that the
+		// arrays stay in the same order, which is not guaranteed by podio's
+		// relation branches and can silently mis-associate tracks.
+		std::vector<int> simForRec(reco_pz_array.GetSize(), -1);
+		for(unsigned int ia=0; ia<rec_id.GetSize(); ia++){
+			int ri = rec_id[ia];
+			if(ri>=0 && ri<(int)simForRec.size()) simForRec[ri] = sim_id[ia];
+		}
+
 		//track loop
 		int numpositivetracks = 0;
-		int failed = 0;
 		for(unsigned int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
 			TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
 			
@@ -136,25 +149,24 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 			trk.RotateY(0.025);
 	
 			if(reco_type[itrk] == -1){ 
-				failed++;
 				continue;
 			}
+			int thisSim = simForRec[itrk];
 	
-
 		  if(reco_charge_array[itrk]>0){ 
 				numpositivetracks++; 
-			  if ((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==1){
+			  if ((thisSim==4 || thisSim==5) && reco_charge_array[itrk]==1){
 			    piplusREC.SetVectM(trk,MASS_PION); 
 			    isPiPlusFound=true;
 			  }
-		     if(sim_id[itrk - failed]==6){
+		     if(thisSim==6){
 		     	protonRECasifpion.SetVectM(trk,MASS_PION);
 		     	isProtonFound=true; 
 		     }
 			}
 		  if(reco_charge_array[itrk]<0){ 
 		  	piminusREC.SetVectM(trk,MASS_PION); 
-		  	if((sim_id[itrk - failed]==4 || sim_id[itrk - failed]==5) && reco_charge_array[itrk - failed]==-1)	isPiMinusFound=true;
+		  	if((thisSim==4 || thisSim==5) && reco_charge_array[itrk]==-1)	isPiMinusFound=true;
 		  }
 			
 		}
