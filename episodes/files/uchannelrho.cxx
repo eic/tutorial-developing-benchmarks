@@ -64,11 +64,11 @@ int uchannelrho(TString rec_file="input.root", TString outputfile="output.root")
 	TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedParticles.charge"};
 	TTreeReaderArray<int>   reco_type     = {tree_reader,"ReconstructedChargedParticles.type"};
 	
-	// The association simID/recID are now stored as podio relation branches.
-	// _ReconstructedChargedParticleAssociations_sim.index is the index into the
-	// MCParticles collection; _..._rec.index is the index into ReconstructedChargedParticles.
-	TTreeReaderArray<int> rec_id = {tree_reader, "_ReconstructedChargedParticleAssociations_rec.index"};
-	TTreeReaderArray<int> sim_id = {tree_reader, "_ReconstructedChargedParticleAssociations_sim.index"};
+	// The link simID/recID are now stored as podio relation branches.
+	// _ReconstructedChargedParticleLinks_to.index is the index into the
+	// MCParticles collection; _..._from.index is the index into ReconstructedChargedParticles.
+	TTreeReaderArray<unsigned int> rec_id = {tree_reader, "_ReconstructedChargedParticleLinks_from.index"};
+	TTreeReaderArray<unsigned int> sim_id = {tree_reader, "_ReconstructedChargedParticleLinks_to.index"};
 	
 	TString output_name_dir = outputfile;
 	cout << "Output file = " << output_name_dir << endl;
