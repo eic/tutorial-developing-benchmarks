@@ -18,5 +18,5 @@ To start, download the following
 We will also start by running over a file from the simulation campaign. Download it to your workspace:
 
 ```bash
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.edm4eic.root ./
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.edm4eic.root ./
 ```
