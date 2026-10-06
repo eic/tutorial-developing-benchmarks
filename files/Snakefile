@@ -5,7 +5,7 @@ rule your_benchmark_campaign_reco_get:
         f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.edm4eic.root",
     retries: 3
     shell: """
-xrdcp root://dtn-eic.jlab.org//volatile/eic/EPIC/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root {output}
+xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root {output}
 """
 
 rule your_benchmark_analysis:
