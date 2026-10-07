@@ -44,10 +44,10 @@ Copy the following files to this working directory:
 - this plotting macro: [`plot_rho_physics_benchmark.C`](files/prefinal/plot_rho_physics_benchmark.C)
 - this style header: [`RiceStyle.h`](files/RiceStyle.h)
 
-We will also start by running over a file from the simulation campaign. Download it to your workspace:
+We will also start by running over a file from the simulation campaign. Download it to your workspace with [Rucio](https://eic.github.io/tutorial-file-access/):
 
 ```bash
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.edm4eic.root ./
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.0020.eicrecon.edm4eic.root | head -1) ./
 ```
 
 Organize files into `analysis` and `macros` directories:
@@ -96,7 +96,7 @@ rule your_benchmark_campaign_reco_get:
     output:
         f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.edm4eic.root",
     shell: """
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root {output}
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root | head -1) {output}
 """
 ```
 
@@ -250,7 +250,7 @@ rule your_benchmark_campaign_reco_get:
         f"sim_output/rho_10x100_uChannel_Q2of0to10_hiDiv.{{INDEX}}.eicrecon.edm4eic.root",
     retries: 3
     shell: """
-xrdcp root://dtn2304.jlab.org:8443//jlab-osdf-ro/eic/EPIC/volatile/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root {output}
+xrdcp $(rucio replica list file --protocols root --pfns --rses isopenaccess epic:/RECO/25.10.2/epic_craterlake/EXCLUSIVE/UCHANNEL_RHO/10x100/rho_10x100_uChannel_Q2of0to10_hiDiv.{wildcards.INDEX}.eicrecon.edm4eic.root | head -1) {output}
 """
 
 rule your_benchmark_analysis:
